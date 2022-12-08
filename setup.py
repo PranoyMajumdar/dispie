@@ -4,7 +4,7 @@ with open('README.md', 'r') as file:
     long_description = file.read()
 setup(
     name='dispie',
-    version='0.0.1',
+    version='0.0.2',
     author = "Pranoy Majumdar",
     author_email = "officialpranoy2@gmail.com",
     description = "🚀 A fantastic library created for use with Discord.py",
@@ -21,6 +21,6 @@ setup(
     ],
     packages = find_packages(),
     python_requires = ">=3.7",
-    install_requires=['discord.py>=2.0.0'],
+    install_requires=['discord.py>=2.0.0', 'discord-ext-menus==1.1'],
     license="MIT"
 )
