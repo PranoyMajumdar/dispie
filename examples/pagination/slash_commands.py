@@ -64,4 +64,4 @@ async def text(interaction : discord.Interaction):
     paginator = Paginator(source=TextPaginator(text), ctx=interaction)
     await paginator.paginate(ephemeral=ephemeral)
 if __name__ == "__main__":
-    bot.run('OTY0OTM1NzU5NzAwMzI4NDU5.GVaXb9.qw2SKuZNMIROqch0i9nSIvlnCOQCk38KcVpOug')
+    bot.run('token')

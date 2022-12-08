@@ -55,4 +55,4 @@ async def text(ctx : commands.Context):
     await paginator.paginate()
 
 if __name__ == "__main__":
-    bot.run('OTY0OTM1NzU5NzAwMzI4NDU5.GVaXb9.qw2SKuZNMIROqch0i9nSIvlnCOQCk38KcVpOug')
+    bot.run('token')
