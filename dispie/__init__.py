@@ -1,3 +1,5 @@
 from .paginator import *
-from .help_commands import * 
-__version__ = '0.0.2'
+from .help_commands import *
+from .utils import *
+from .embed_creator import * 
+__version__ = "0.0.3"
