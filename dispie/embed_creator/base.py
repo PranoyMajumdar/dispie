@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Optional, Any, Union
+from typing import List, Literal, Optional, Any, Union
 
 from discord import Embed, Interaction, InteractionMessage, TextChannel, SelectOption
 from discord.ext.commands import Bot
@@ -95,6 +95,7 @@ class EmbedCreator(View, CreatorMethods):
         bot: Bot,
         embed: Embed,
         timeout: Optional[float] = None,
+        **kwargs: Any,
     ) -> None:
         super().__init__(timeout=timeout)
         self.channel, self.bot, self.embed, self.timeout, self._creator_methods = (
@@ -104,72 +105,85 @@ class EmbedCreator(View, CreatorMethods):
             timeout,
             CreatorMethods(embed),
         )
-
-        self.children[0].options = [  # type: ignore
-            SelectOption(
-                label="Edit Author",
-                description="Edits the embed author name, icon.",
-                emoji="❓",
-                value="author",
-            ),
-            SelectOption(
-                label="Edit Message (title, description)",
-                description="Edits the embed title, description.",
-                emoji="❓",
-                value="message",
-            ),
-            SelectOption(
-                label="Edit Thumbnail",
-                description="Edits the embed thumbnail url.",
-                emoji="❓",
-                value="thumbnail",
-            ),
-            SelectOption(
-                label="Edit Image",
-                description="Edits the embed image url.",
-                emoji="❓",
-                value="image",
-            ),
-            SelectOption(
-                label="Edit Footer",
-                description="Edits the embed footer text, icon url.",
-                emoji="❓",
-                value="footer",
-            ),
-            SelectOption(
-                label="Edit Color",
-                description="Edits the embed colour.",
-                emoji="❓",
-                value="color",
-            ),
-            SelectOption(
-                label="Add Field",
-                description="Edits the embed colour.",
-                emoji="❓",
-                value="addfield",
-            ),
-            SelectOption(
-                label="Remove Field",
-                description="Edits the embed colour.",
-                emoji="❓",
-                value="removefield",
-            ),
+        self.options_data = [
+            {
+                "label": kwargs.get("author_label", "Edit Author"),
+                "description": kwargs.get(
+                    "author_description", "Edits the embed author name, icon."
+                ),
+                "emoji": kwargs.get("author_emoji", "❓"),
+                "value": "author",
+            },
+            {
+                "label": kwargs.get(
+                    "message_label", "Edit Message (title, description)"
+                ),
+                "description": kwargs.get(
+                    "message_description", "Edits the embed title, description."
+                ),
+                "emoji": kwargs.get("message_emoji", "❓"),
+                "value": "message",
+            },
+            {
+                "label": kwargs.get("thumbnail_label", "Edit Thumbnail"),
+                "description": kwargs.get(
+                    "thumbnail_description", "Edits the embed thumbnail url."
+                ),
+                "emoji": kwargs.get("thumbnail_emoji", "❓"),
+                "value": "thumbnail",
+            },
+            {
+                "label": kwargs.get("image_label", "Edit Image"),
+                "description": kwargs.get(
+                    "image_description", "Edits the embed image url."
+                ),
+                "emoji": kwargs.get("image_emoji", "❓"),
+                "value": "image",
+            },
+            {
+                "label": kwargs.get("footer_label", "Edit Footer"),
+                "description": kwargs.get(
+                    "footer_description", "Edits the embed footer text, icon url."
+                ),
+                "emoji": kwargs.get("footer_emoji", "❓"),
+                "value": "footer",
+            },
+            {
+                "label": kwargs.get("color_label", "Edit Color"),
+                "description": kwargs.get(
+                    "color_description", "Edits the embed colour."
+                ),
+                "emoji": kwargs.get("color_emoji", "❓"),
+                "value": "color",
+            },
+            {
+                "label": kwargs.get("addfield_label", "Add Field"),
+                "description": kwargs.get(
+                    "addfield_description", "Adds a field to the embed."
+                ),
+                "emoji": kwargs.get("addfield_emoji", "❓"),
+                "value": "addfield",
+            },
+            {
+                "label": kwargs.get("removefield_label", "Remove Field"),
+                "description": kwargs.get(
+                    "removefield_description", "Removes a field from the embed."
+                ),
+                "emoji": kwargs.get("removefield_emoji", "❓"),
+                "value": "removefield",
+            },
         ]
+
+        self.children[0].options = [SelectOption(**option) for option in self.options_data]  # type: ignore
 
     async def update_embed(self, interaction: Interaction):
         """This function will update the whole embed and edit the message and view."""
-        if isinstance(interaction.message, InteractionMessage):
-            return await interaction.message.edit(embed=self.embed, view=self)
-        
-
-        # If interaction.message = None
-        await interaction.edit_original_response(embed=self.embed, view=self)
+        return await interaction.message.edit(embed=self.embed, view=self)  # type: ignore
 
     @select(placeholder="Edit a section")
     async def edit_select_callback(
         self, interaction: Interaction, select: Select
     ) -> None:
-
         await self._creator_methods.callbacks[select.values[0]](interaction)
         await self.update_embed(interaction)
 
