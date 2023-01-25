@@ -12,4 +12,3 @@ async def test(ctx: commands.Context):
     await ctx.send(embed=embed, view=view)
 
 
-bot.run("MTA2NTU1ODQ5NDA2MjgzNzc2MA.GFRH82.B4L83SzvJOhIDjyq5l5DCetAP2FNBs0Kvel6B4")

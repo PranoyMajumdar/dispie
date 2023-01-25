@@ -1,11 +1,12 @@
 from __future__ import annotations
 from typing import List, Optional
 
-from discord.ui import Modal, Select, View, select
+
+from discord.ui import ChannelSelect, Modal, Select, View, select
 from discord import Interaction, SelectOption
 from contextlib import suppress
 
-__all__ = ("ModalInput", "SelectPrompt")
+__all__ = ("ModalInput", "SelectPrompt", "ChannelSelectPrompt")
 
 
 class ModalInput(Modal):
@@ -36,6 +37,7 @@ class SelectPrompt(View):
 
     @select()
     async def select_callback(self, interaction: Interaction, select: Select):
+        await interaction.response.defer(ephemeral=self.ephemeral)
         if self.ephemeral:
             await interaction.delete_original_response()
         else:
@@ -43,3 +45,24 @@ class SelectPrompt(View):
                 await interaction.message.delete()  # type: ignore
         self.values = select.values
         self.stop()
+
+class ChannelSelectPrompt(View):
+    def __init__(
+        self, placeholder: str, ephemeral: bool = False, max_values: int = 1
+    ) -> None:
+        super().__init__()
+        self.values = None
+        self.ephemeral = ephemeral
+        self.children[0].placeholder, self.children[0].max_values = placeholder, max_values# type: ignore
+
+    @select(cls=ChannelSelect)
+    async def callback(self, interaction: Interaction, select: ChannelSelect):
+        await interaction.response.defer(ephemeral=self.ephemeral)
+        if self.ephemeral:
+            await interaction.delete_original_response()
+        else:
+            with suppress(Exception):
+                await interaction.message.delete()  # type: ignore
+        self.values = [interaction.guild.get_channel(i.id) for i in select.values] # type: ignore
+        self.stop()
+        

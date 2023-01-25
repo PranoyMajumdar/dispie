@@ -233,7 +233,8 @@ class CreatorMethods:
         select = SelectPrompt(
             placeholder="Select a field to remove...",
             options=field_options,
-            max_values=len(field_options)
+            max_values=len(field_options),
+            ephemeral=True
         )
         await interaction.response.send_message(view=select, ephemeral=True)
         await select.wait()
