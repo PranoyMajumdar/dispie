@@ -2,12 +2,11 @@ from __future__ import annotations
 
 from typing import Optional, Any
 
-from discord import ButtonStyle, CategoryChannel, Embed, ForumChannel, HTTPException, Interaction, StageChannel, TextChannel, SelectOption
+from discord import ButtonStyle, CategoryChannel, Embed, ForumChannel, HTTPException, Interaction, StageChannel, Colour, SelectOption
 from discord.ext.commands import Bot
 from discord.ui import Item, Select, select, Button, button, View
 from dispie.embed_creator.methods import CreatorMethods
 from dispie import ChannelSelectPrompt
-
 
 
 __all__ = ("EmbedCreator",)
@@ -17,7 +16,7 @@ class EmbedCreator(View):
     """
     This class is a subclass of `discord.ui.View`.
     It is intended to be used as a base class for creating a panel that allows users to create embeds in a specified Discord TextChannel.
-    
+
     Parameters:
         bot (discord.Client or discord.ext.commands.Bot): An instance of the Discord bot that will be used to access client information such as avatar, name, and ID.
         embed (discord.Embed): An instance of the Discord Embed class that will be used as the main embed.
@@ -28,11 +27,13 @@ class EmbedCreator(View):
         self,
         *,
         bot: Bot,
-        embed: Embed,
+        embed: Optional[Embed] = None,
         timeout: Optional[float] = None,
         **kwargs: Any,
     ) -> None:
         super().__init__(timeout=timeout)
+        if not embed:
+            embed = self.get_default_embed
         self.bot, self.embed, self.timeout, self._creator_methods = (
             bot,
             embed,
@@ -107,20 +108,46 @@ class EmbedCreator(View):
                 "value": "removefield",
             },
         ]
-        
-        self.children[0].options = [SelectOption(**option) for option in self.options_data]  # type: ignore
-        self.children[1].label, self.children[1].emoji, self.children[1].style = kwargs.get("send_label", 'Send'), kwargs.get("send_emoji", None), kwargs.get("send_style", ButtonStyle.blurple) # type: ignore
-        self.children[2].label, self.children[2].emoji, self.children[2].style = kwargs.get("cancel_label", 'Cancel'), kwargs.get("cancel_emoji", None), kwargs.get("cancel_style", ButtonStyle.red) # type: ignore
-        
+
+        self.children[0].options = [SelectOption(  # type: ignore
+            **option) for option in self.options_data
+        ]
+        self.children[1].label, self.children[1].emoji, self.children[1].style = kwargs.get(  # type: ignore
+            "send_label", 'Send'), kwargs.get("send_emoji", None), kwargs.get("send_style", ButtonStyle.blurple)
+        self.children[2].label, self.children[2].emoji, self.children[2].style = kwargs.get(  # type: ignore
+            "cancel_label", 'Cancel'), kwargs.get("cancel_emoji", None), kwargs.get("cancel_style", ButtonStyle.red)  # type: ignore
+
     async def on_error(self, interaction: Interaction, error: Exception, item: Item[Any]) -> None:
         if isinstance(error, HTTPException) and error.code == 50035:
-                # This will save you from the '50035' error, if any user try to remove all the attr of the embed then HTTP exception will raise with the error code `50035`
-                self.embed.description = f"_ _"
-                await self.update_embed(interaction)
+            # This will save you from the '50035' error, if any user try to remove all the attr of the embed then HTTP exception will raise with the error code `50035`
+            self.embed.description = f"_ _"
+            await self.update_embed(interaction)
 
     async def update_embed(self, interaction: Interaction):
         """This function will update the whole embed and edit the message and view."""
         return await interaction.message.edit(embed=self.embed, view=self)  # type: ignore
+
+    @property
+    def get_default_embed(self) -> Embed:
+        """
+        This class method `get_default_embed` returns a pre-configured `discord.Embed` object with
+        title, description, color, author, thumbnail, image and footer set to specific values.
+        It can be used as a default template for creating the embed builder.
+
+        Returns:
+            embed (discord.Embed)
+        """
+        embed = Embed(title='This is title',
+                      description="Use the dropdown menu to edit my sections!", colour=Colour.blurple())
+        embed.set_author(name='Welcome to embed builder.',
+                         icon_url="https://cdn.iconscout.com/icon/premium/png-512-thumb/panel-6983404-5721235.png?")
+        embed.set_thumbnail(
+            url="https://cdn.iconscout.com/icon/premium/png-512-thumb/panel-6983404-5721235.png?")
+        embed.set_image(
+            url="https://imageup.me/images/e44472bd-d742-4d39-8e25-b8ae762160ae.png")
+        embed.set_footer(
+            text='Footer', icon_url="https://cdn.iconscout.com/icon/premium/png-512-thumb/panel-6983404-5721235.png?")
+        return embed
 
     @select(placeholder="Edit a section")
     async def edit_select_callback(
@@ -150,14 +177,14 @@ class EmbedCreator(View):
             interaction (discord.Interaction): The interaction object representing the current interaction.
             button (discord.Button): The button object representing the "send" button.
         """
-        prompt = ChannelSelectPrompt("Select a channel to send this embed...", True, 1)
+        prompt = ChannelSelectPrompt(
+            "Select a channel to send this embed...", True, 1)
         await interaction.response.send_message(view=prompt, ephemeral=True)
         await prompt.wait()
         if prompt.values:
             if not isinstance(prompt.values[0], (StageChannel, ForumChannel, CategoryChannel)):
-                await prompt.values[0].send(embed=self.embed) # type: ignore
-                await interaction.message.delete() # type: ignore
-
+                await prompt.values[0].send(embed=self.embed)  # type: ignore
+                await interaction.message.delete()  # type: ignore
 
     @button()
     async def cancel_callback(self, interaction: Interaction, button: Button) -> None:
@@ -169,5 +196,5 @@ class EmbedCreator(View):
             interaction (Interaction): The interaction object representing the current interaction.
             button (Button): The button object representing the "cancel" button.
         """
-        await interaction.message.delete() # type: ignore
+        await interaction.message.delete()  # type: ignore
         self.stop()
