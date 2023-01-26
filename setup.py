@@ -4,7 +4,7 @@ with open('README.md', 'r') as file:
     long_description = file.read()
 setup(
     name='dispie',
-    version='0.0.3',
+    version='0.0.4',
     author = "Pranoy Majumdar",
     author_email = "officialpranoy2@gmail.com",
     description = "🚀 A fantastic library created for use with Discord.py",
