@@ -15,28 +15,25 @@ __all__ = ("EmbedCreator",)
 
 class EmbedCreator(View, CreatorMethods):
     """
-    This class inherits from the `discord.ui.View` class and `CreatorMethods`.
-    This class is meant to be used as a base class for creating a panel that allows users to create embeds in a specified Discord TextChannel.
-    The class takes in 3 required arguments:
-
-    channel: A TextChannel instance where the embeds will be created.
-    bot: A discord.Client or discord.ext.commands.Bot instance that will be used to get some details of the client like (avatar, name, id).
-    embed: A discord.Embed instance that will be used as a main embed.
-    timeout: An optional argument that is passed to the parent View class. It is used to specify a timeout for the view in seconds.
+    This class is a subclass of both `discord.ui.View` and `CreatorMethods`.
+    It is intended to be used as a base class for creating a panel that allows users to create embeds in a specified Discord TextChannel.
+    
+    Parameters:
+        bot (discord.Client or discord.ext.commands.Bot): An instance of the Discord bot that will be used to access client information such as avatar, name, and ID.
+        embed (discord.Embed): An instance of the Discord Embed class that will be used as the main embed.
+        timeout (float, optional): An optional argument that is passed to the parent View class. It is used to specify a timeout for the view in seconds.
     """
 
     def __init__(
         self,
         *,
-        channel: TextChannel,
         bot: Bot,
         embed: Embed,
         timeout: Optional[float] = None,
         **kwargs: Any,
     ) -> None:
         super().__init__(timeout=timeout)
-        self.channel, self.bot, self.embed, self.timeout, self._creator_methods = (
-            channel,
+        self.bot, self.embed, self.timeout, self._creator_methods = (
             bot,
             embed,
             timeout,
@@ -110,7 +107,7 @@ class EmbedCreator(View, CreatorMethods):
                 "value": "removefield",
             },
         ]
-
+        
         self.children[0].options = [SelectOption(**option) for option in self.options_data]  # type: ignore
         self.children[1].label, self.children[1].emoji, self.children[1].style = kwargs.get("send_label", 'Send'), kwargs.get("send_emoji", None), kwargs.get("send_style", ButtonStyle.blurple) # type: ignore
         self.children[2].label, self.children[2].emoji, self.children[2].style = kwargs.get("cancel_label", 'Cancel'), kwargs.get("cancel_emoji", None), kwargs.get("cancel_style", ButtonStyle.red) # type: ignore
@@ -124,11 +121,30 @@ class EmbedCreator(View, CreatorMethods):
     async def edit_select_callback(
         self, interaction: Interaction, select: Select
     ) -> None:
+        """
+        This method is a callback function for the `select` interaction.
+        It is triggered when a user selects an option from the select menu. 
+        The method uses the `callbacks` attribute of the `CreatorMethods` class to call the appropriate callback function based on the user's selection.
+
+        Parameters:
+            interaction (discord.Interaction): The interaction object representing the current interaction.
+            select (discord.Select): The select object representing the select menu.
+
+        """
         await self._creator_methods.callbacks[select.values[0]](interaction)
         await self.update_embed(interaction)
 
     @button()
     async def send_callback(self, interaction: Interaction, button: Button) -> None:
+        """
+        This method is a callback function for the `button` interaction. It is triggered when a user clicks on the "send" button. 
+        The method creates a `ChannelSelectPrompt` object and sends it as an ephemeral message to the user. It then waits for the user to select a channel.
+        If a channel is selected, the method sends the embed to the selected channel and deletes the original interaction message.
+
+        Parameters:
+            interaction (discord.Interaction): The interaction object representing the current interaction.
+            button (discord.Button): The button object representing the "send" button.
+        """
         prompt = ChannelSelectPrompt("Select a channel to send this embed...", True, 1)
         await interaction.response.send_message(view=prompt, ephemeral=True)
         await prompt.wait()
@@ -140,5 +156,13 @@ class EmbedCreator(View, CreatorMethods):
 
     @button()
     async def cancel_callback(self, interaction: Interaction, button: Button) -> None:
+        """
+        This method is a callback function for the `button` interaction. It is triggered when a user clicks on the "cancel" button. 
+        The method deletes the original interaction message and stops the current interaction.
+
+        Parameters:
+            interaction (Interaction): The interaction object representing the current interaction.
+            button (Button): The button object representing the "cancel" button.
+        """
         await interaction.message.delete() # type: ignore
         self.stop()

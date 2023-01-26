@@ -12,6 +12,32 @@ __all__ = (
     "Paginator",
 )
 class Paginator(View):
+    """
+    The Paginator class is used for paginating through a list of items, such as list of embeds.
+    It allows for easy navigation between pages using the "previous" and "next" buttons.
+
+    Attributes:
+    message (Optional[Message]): The message object representing the current page.
+    pages (List[Any]): The list of items to be paginated.
+    timeout (Optional[float]): The amount of time before the paginator times out and stops. Defaults to 180 seconds.
+    delete_message_after (bool): Whether or not to delete the message after the paginator has stopped. Defaults to False.
+    per_page (int): The number of items to display per page. Defaults to 1.
+    current_page (int): The current page number.
+    ctx (Optional[Context]): The context object of the paginator.
+    interaction (Optional[Interaction]): The interaction object of the paginator.
+    max_pages (int): The maximum number of pages.
+
+    Methods:
+    stop(): Stops the paginator and sets all attributes to None.
+    get_page(page_number: int): Returns the items for a given page number.
+    format_page(page: Any): Formats a page for display.
+    get_page_kwargs(page: Any): Returns the keyword arguments for sending a message with the current page.
+    update_page(interaction: Interaction): Updates the current page to be displayed.
+    previous_page(interaction: Interaction, button: Button): Navigates to the previous page.
+    next_page(interaction: Interaction, button: Button): Navigates to the next page.
+    start(obj: Union[Context, Interaction]): Starts the paginator and sends the first page. Returns the message object representing the current page.
+
+    """
     message: Optional[Message] = None
 
     def __init__(

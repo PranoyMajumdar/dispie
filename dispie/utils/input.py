@@ -10,6 +10,15 @@ __all__ = ("ModalInput", "SelectPrompt", "ChannelSelectPrompt")
 
 
 class ModalInput(Modal):
+    """
+    This class is a subclass of the `Modal` class that is intended to be used as a base class for creating modals that require user input.
+
+    Parameters:
+        title (str): The title of the modal.
+        timeout (float, optional): An optional argument that is passed to the parent Modal class. It is used to specify a timeout for the modal in seconds.
+        custom_id (str, optional): An optional argument that is passed to the parent Modal class. It is used to specify a custom ID for the modal.
+        ephemeral (bool, optional): A boolean indicating whether the modal will be sent as an ephemeral message or not.
+    """
     def __init__(
         self,
         *,
@@ -27,6 +36,15 @@ class ModalInput(Modal):
 
 
 class SelectPrompt(View):
+    """
+    This class is a subclass of the `View` class that is intended to be used as a base class for creating a select prompt.
+
+    Parameters:
+        placeholder (str): The placeholder text that will be displayed in the select prompt.
+        options (List[SelectOption]): A list of `SelectOption` instances that will be displayed as options in the select prompt.
+        max_values (int, optional): The maximum number of options that can be selected by the user. Default is 1.
+        ephemeral (bool, optional): A boolean indicating whether the select prompt will be sent as an ephemeral message or not. Default is False.
+    """
     def __init__(
         self, placeholder: str, options: List[SelectOption], max_values: int = 1, ephemeral: bool = False
     ) -> None:
@@ -47,6 +65,14 @@ class SelectPrompt(View):
         self.stop()
 
 class ChannelSelectPrompt(View):
+    """
+    This class is a subclass of the `View` class that is intended to be used as a base class for creating a channel select prompt.
+
+    Parameters:
+        placeholder (str): The placeholder text that will be displayed in the channel select prompt.
+        ephemeral (bool, optional): A boolean indicating whether the select prompt will be sent as an ephemeral message or not. Default is False.
+        max_values (int, optional): The maximum number of options that can be selected by the user. Default is 1.
+    """
     def __init__(
         self, placeholder: str, ephemeral: bool = False, max_values: int = 1
     ) -> None:
