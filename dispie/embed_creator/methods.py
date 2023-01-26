@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable, Dict
+from typing import Callable, Dict, Union
 from dispie import ModalInput, SelectPrompt
 from discord import Colour, Embed, HTTPException, Interaction, SelectOption, TextStyle
 from discord.ui import TextInput
@@ -27,6 +27,7 @@ class CreatorMethods:
             "addfield": self.add_field,
             "removefield": self.remove_field,
         }
+
 
     async def edit_author(self, interaction: Interaction) -> None:
         """This method edits the embed's author"""
@@ -103,7 +104,7 @@ class CreatorMethods:
         modal.add_item(
             TextInput(
                 label="Thumbnail Url",
-                default=self.embed.title,
+                default=self.embed.thumbnail.url,
                 placeholder="Thumbnail you want to display in the embed",
                 required=False,
             )
@@ -118,7 +119,7 @@ class CreatorMethods:
         modal.add_item(
             TextInput(
                 label="Image Url",
-                default=self.embed.title,
+                default=self.embed.image.url,
                 placeholder="Image you want to display in the embed",
                 required=False,
             )
@@ -143,7 +144,7 @@ class CreatorMethods:
             TextInput(
                 label="Footer Icon",
                 required=False,
-                default=self.embed.footer.text,
+                default=self.embed.footer.icon_url,
                 placeholder="Icon you want to display on embed footer",
             )
         )
@@ -160,7 +161,7 @@ class CreatorMethods:
             TextInput(
                 label="Embed Colour",
                 placeholder="The colour you want to display on embed (e.g: #303236)",
-                max_length=20,
+                max_length=20
             )
         )
         await interaction.response.send_modal(modal)

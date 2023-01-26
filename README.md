@@ -16,5 +16,4 @@ python3 -m pip install git+https://github.com/PranoyMajumdar/dispie
 Quick overview of the available features.
 
 - [x] Button Paginator
-<!-- - [ ] Music (In developementment)
-- [ ] Hot Reloader (In developement) -->
+- [x] Advance Embed Builder (With Select Menus)

@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import Optional, Any
 
-from discord import ButtonStyle, CategoryChannel, Embed, ForumChannel, Interaction, StageChannel, TextChannel, SelectOption
+from discord import ButtonStyle, CategoryChannel, Embed, ForumChannel, HTTPException, Interaction, StageChannel, TextChannel, SelectOption
 from discord.ext.commands import Bot
-from discord.ui import Select, select, Button, button, View
+from discord.ui import Item, Select, select, Button, button, View
 from dispie.embed_creator.methods import CreatorMethods
 from dispie import ChannelSelectPrompt
 
@@ -13,9 +13,9 @@ from dispie import ChannelSelectPrompt
 __all__ = ("EmbedCreator",)
 
 
-class EmbedCreator(View, CreatorMethods):
+class EmbedCreator(View):
     """
-    This class is a subclass of both `discord.ui.View` and `CreatorMethods`.
+    This class is a subclass of `discord.ui.View`.
     It is intended to be used as a base class for creating a panel that allows users to create embeds in a specified Discord TextChannel.
     
     Parameters:
@@ -112,7 +112,12 @@ class EmbedCreator(View, CreatorMethods):
         self.children[1].label, self.children[1].emoji, self.children[1].style = kwargs.get("send_label", 'Send'), kwargs.get("send_emoji", None), kwargs.get("send_style", ButtonStyle.blurple) # type: ignore
         self.children[2].label, self.children[2].emoji, self.children[2].style = kwargs.get("cancel_label", 'Cancel'), kwargs.get("cancel_emoji", None), kwargs.get("cancel_style", ButtonStyle.red) # type: ignore
         
-    
+    async def on_error(self, interaction: Interaction, error: Exception, item: Item[Any]) -> None:
+        if isinstance(error, HTTPException) and error.code == 50035:
+                # This will save you from the '50035' error, if any user try to remove all the attr of the embed then HTTP exception will raise with the error code `50035`
+                self.embed.description = f"_ _"
+                await self.update_embed(interaction)
+
     async def update_embed(self, interaction: Interaction):
         """This function will update the whole embed and edit the message and view."""
         return await interaction.message.edit(embed=self.embed, view=self)  # type: ignore
