@@ -7,7 +7,6 @@ dispie.egg-info/SOURCES.txt
 dispie.egg-info/dependency_links.txt
 dispie.egg-info/top_level.txt
 dispie/embed_creator/__init__.py
-dispie/embed_creator/base.py
 dispie/embed_creator/methods.py
 dispie/help_commands/__init__.py
 dispie/help_commands/minimal.py
