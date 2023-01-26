@@ -1,1 +1,1 @@
-from .base import EmbedCreator
+from .base import *
