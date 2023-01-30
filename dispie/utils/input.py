@@ -3,7 +3,7 @@ from typing import List, Optional
 
 
 from discord.ui import ChannelSelect, Modal, Select, View, select
-from discord import Interaction, SelectOption
+from discord import Interaction, SelectOption, ChannelType
 from contextlib import suppress
 
 __all__ = ("ModalInput", "SelectPrompt", "ChannelSelectPrompt")
@@ -81,7 +81,7 @@ class ChannelSelectPrompt(View):
         self.ephemeral = ephemeral
         self.children[0].placeholder, self.children[0].max_values = placeholder, max_values# type: ignore
 
-    @select(cls=ChannelSelect)
+    @select(cls=ChannelSelect, channel_types=[ChannelType.text, ChannelType.private_thread, ChannelType.public_thread])
     async def callback(self, interaction: Interaction, select: ChannelSelect):
         await interaction.response.defer(ephemeral=self.ephemeral)
         if self.ephemeral:

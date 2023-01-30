@@ -117,6 +117,8 @@ class EmbedCreator(View):
         self.children[2].label, self.children[2].emoji, self.children[2].style = kwargs.get(  # type: ignore
             "cancel_label", 'Cancel'), kwargs.get("cancel_emoji", None), kwargs.get("cancel_style", ButtonStyle.red)  # type: ignore
 
+
+    
     async def on_error(self, interaction: Interaction, error: Exception, item: Item[Any]) -> None:
         if isinstance(error, HTTPException) and error.code == 50035:
             # This will save you from the '50035' error, if any user try to remove all the attr of the embed then HTTP exception will raise with the error code `50035`
