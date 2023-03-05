@@ -26,3 +26,4 @@ var/
 
 # Our configuration files
 config.py
+main.py

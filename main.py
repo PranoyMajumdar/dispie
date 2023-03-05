@@ -16,5 +16,7 @@ async def test(ctx: commands.Context):
                 return False
     view.interaction_check = check
     await ctx.send(embed=view.get_default_embed, view=view)
-
-
+@bot.event
+async def on_ready():
+    print("Logged in")
+bot.run("MTA3MTg1MTMyNjIzNDk1MTc3MA.GGfshw.UPgg3a1z2W2HvHk2gdGt2n7WcliqP708UtO984")
