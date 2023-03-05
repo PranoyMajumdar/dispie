@@ -1,5 +1,7 @@
 from discord.ext import commands
 from dispie import EmbedCreator
+from dispie.music import MusicClient
+from config import token
 import discord
 
 bot = commands.Bot(command_prefix="", intents=discord.Intents.all())
@@ -19,4 +21,4 @@ async def test(ctx: commands.Context):
 @bot.event
 async def on_ready():
     print("Logged in")
-bot.run("MTA3MTg1MTMyNjIzNDk1MTc3MA.GGfshw.UPgg3a1z2W2HvHk2gdGt2n7WcliqP708UtO984")
+bot.run(token)
