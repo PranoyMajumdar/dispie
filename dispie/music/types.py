@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 from typing import TypedDict
-from discord.ext.commands import Context
-from discord import Interaction
+
 
 __all__ = (
-    "Node", "PlayerContext"
+    "Node", "MusicVariables"
 )
 
 
@@ -15,5 +14,13 @@ class Node(TypedDict):
     password: str
     identifier: str
 
-class PlayerContext(Interaction, Context):
-    pass
+
+
+class MusicVariables:
+    title: str = "{title}"
+    thumbnail: str = "{thumbnail}"
+
+
+
+
+

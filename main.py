@@ -1,11 +1,20 @@
 from discord.ext import commands
 from dispie import EmbedCreator
-from dispie.music import MusicClient
+from dispie.music import MusicClient, Node
 from config import token
 import discord
 
 bot = commands.Bot(command_prefix="", intents=discord.Intents.all())
+client = MusicClient(
+     bot=bot,
+    nodes={
+     "host": "jklef",
+     "port": 90,
+     "identifier": "ok",
+     "password": "ok"
+    }
 
+)
 
 @bot.command()
 async def test(ctx: commands.Context):
