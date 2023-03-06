@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from typing import List, Literal, Union
+from typing import Literal
 
 from discord import Client, Embed, Message
 from dispie.music import Node, MusicPlayer
-from pomice import Player, NodePool, Track
+from pomice import NodePool, Track
 
+
+# https://github.com/freyacodes/Lavalink/releases/download/3.7.5/Lavalink.jar
 
 class MusicClient:
     """
@@ -18,7 +20,7 @@ class MusicClient:
 
     def __init__(self, bot: Client, nodes: list[Node] | Node) -> None:
         self.bot = bot
-        self.nodes = [nodes] if isinstance(nodes, Node) else nodes
+        self.nodes = [nodes] if isinstance(nodes, list) else nodes
         self._node_pool = NodePool()
         self._no_playing_embed = Embed(title="No track playing")
         self._playing_embed = Embed(title="Now playing")
@@ -128,3 +130,13 @@ class MusicClient:
         """
         # TODO: Implement track end handling logic
 
+    async def start_nodes(self):
+        for nodes in self.nodes:
+            await self._node_pool.create_node(
+                bot=self.bot,
+                host=nodes.get("host"),
+                port=nodes.get("port"),
+                password=nodes.get("password"),
+                identifier=nodes.get("identifier")
+            )
+            
