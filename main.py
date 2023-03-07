@@ -28,14 +28,15 @@ discord.utils.setup_logging(
 )
 
 database = {
-    "channel_id": ...,
-    "message_id": ...
+    "channel_id": 1047852590060285973,
+    "message_id": 1082595376487485470
 }
 
 @bot.event
 async def on_message(message: discord.Message):
     if message.id == database['message_id'] and message.channel.id == database['channel_id']:
         await music.handle_on_message(message, database['message_id'])
+    await bot.process_commands(message)
 
 @bot.event
 async def on_ready():

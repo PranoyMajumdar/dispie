@@ -123,3 +123,65 @@
 2023-03-07 03:26:46.507  INFO 1896 --- [XNIO-1 task-2] lavalink.server.io.RequestLoggingFilter  : GET /version, client=127.0.0.1
 2023-03-07 03:26:58.801  INFO 1896 --- [XNIO-1 I/O-14] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:59810 -- CloseStatus[code=1006, reason=]
 2023-03-07 03:26:58.802  INFO 1896 --- [XNIO-1 I/O-14] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2023-03-07 03:27:13.890  INFO 1896 --- [SpringApplicationShutdownHook] io.undertow                              : stopping server: Undertow - 2.2.16.Final
+2023-03-07 03:27:13.898  INFO 1896 --- [SpringApplicationShutdownHook] io.undertow.servlet                      : Destroying Spring FrameworkServlet 'dispatcherServlet'
+2023-03-07 03:27:13.903  INFO 1896 --- [SpringApplicationShutdownHook] c.s.d.l.tools.GarbageCollectionMonitor   : GC monitoring disabled.
+2023-03-07 09:23:16.891  INFO 1468 --- [main] lavalink.server.Launcher                 : Starting Launcher using Java 11.0.17 on pranoymajumdar-dispie-tr6weppi1e4 with PID 1468 (/workspace/dispie/Lavalink.jar started by gitpod in /workspace/dispie)
+2023-03-07 09:23:16.905  INFO 1468 --- [main] lavalink.server.Launcher                 : No active profile set, falling back to 1 default profile: "default"
+2023-03-07 09:23:19.997  INFO 1468 --- [main] lavalink.server.Launcher                 : Started Launcher in 4.585 seconds (JVM running for 5.958)
+2023-03-07 09:23:20.001  INFO 1468 --- [main] lavalink.server.Launcher                 : You can safely ignore the big red warning about illegal reflection. See https://github.com/freyacodes/Lavalink/issues/295
+2023-03-07 09:23:20.309  INFO 1468 --- [main] lavalink.server.Launcher                 : 
+
+[32m       .  [31m _                  _ _       _    [32m__ _ _
+[32m      /\\ [31m| | __ ___   ____ _| (_)_ __ | | __[32m\ \ \ \
+[32m     ( ( )[31m| |/ _` \ \ / / _` | | | '_ \| |/ /[32m \ \ \ \
+[32m      \\/ [31m| | (_| |\ V / (_| | | | | | |   < [32m  ) ) ) )
+[32m       '  [31m|_|\__,_| \_/ \__,_|_|_|_| |_|_|\_\[32m / / / /
+[0m    =========================================[32m/_/_/_/[0m
+
+	Version:        3.7.5
+	Build time:     06.03.2023 12:02:05 UTC
+	Branch          HEAD
+	Commit:         c00286d
+	Commit time:    06.03.2023 11:59:46 UTC
+	JVM:            11.0.17
+	Lavaplayer      1.4.0-original
+
+2023-03-07 09:23:20.385  INFO 1468 --- [main] lavalink.server.Launcher                 : No active profile set, falling back to 1 default profile: "default"
+2023-03-07 09:23:22.150  WARN 1468 --- [main] io.undertow.websockets.jsr               : UT026010: Buffer pool was not set on WebSocketDeploymentInfo, the default pool will be used
+2023-03-07 09:23:22.172  INFO 1468 --- [main] io.undertow.servlet                      : Initializing Spring embedded WebApplicationContext
+2023-03-07 09:23:22.173  INFO 1468 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1781 ms
+2023-03-07 09:23:22.296  WARN 1468 --- [main] l.server.config.SentryConfiguration      : Turning off sentry
+2023-03-07 09:23:22.615  INFO 1468 --- [main] c.s.d.l.tools.GarbageCollectionMonitor   : GC monitoring enabled, reporting results every 2 minutes.
+2023-03-07 09:23:23.319  INFO 1468 --- [main] lavalink.server.config.KoeConfiguration  : OS: LINUX, Arch: X86_64
+2023-03-07 09:23:23.320  INFO 1468 --- [main] lavalink.server.config.KoeConfiguration  : Enabling JDA-NAS
+2023-03-07 09:23:23.326  INFO 1468 --- [main] c.s.l.c.natives.NativeLibraryLoader      : Native library udpqueue: loading with filter null
+2023-03-07 09:23:23.333  INFO 1468 --- [main] c.s.l.c.natives.NativeLibraryLoader      : Native library udpqueue: successfully loaded.
+2023-03-07 09:23:23.707  INFO 1468 --- [main] io.undertow                              : starting server: Undertow - 2.2.16.Final
+2023-03-07 09:23:23.719  INFO 1468 --- [main] org.xnio                                 : XNIO version 3.8.6.Final
+2023-03-07 09:23:23.730  INFO 1468 --- [main] org.xnio.nio                             : XNIO NIO Implementation Version 3.8.6.Final
+2023-03-07 09:23:23.930  INFO 1468 --- [main] org.jboss.threads                        : JBoss Threads version 3.1.0.Final
+2023-03-07 09:23:24.027  INFO 1468 --- [main] o.s.b.w.e.undertow.UndertowWebServer     : Undertow started on port(s) 3030 (http)
+2023-03-07 09:23:24.035  INFO 1468 --- [main] lavalink.server.Launcher                 : Started Launcher in 3.951 seconds (JVM running for 9.995)
+2023-03-07 09:23:24.036  INFO 1468 --- [main] lavalink.server.Launcher                 : Lavalink is ready to accept connections.
+2023-03-07 09:23:27.239  INFO 1468 --- [XNIO-1 task-1] io.undertow.servlet                      : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-03-07 09:23:27.241  INFO 1468 --- [XNIO-1 task-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-03-07 09:23:27.243  INFO 1468 --- [XNIO-1 task-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2023-03-07 09:23:27.263  INFO 1468 --- [XNIO-1 task-1] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:52316
+2023-03-07 09:23:27.283  INFO 1468 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /v3/websocket, client=127.0.0.1
+2023-03-07 09:23:27.318  INFO 1468 --- [XNIO-1 task-2] lavalink.server.io.RequestLoggingFilter  : GET /version, client=127.0.0.1
+2023-03-07 09:23:27.481  INFO 1468 --- [XNIO-1 task-1] lavalink.server.io.SocketServer          : Connection successfully established from Pomice/2.1.1
+2023-03-07 09:23:42.567  INFO 1468 --- [XNIO-1 I/O-11] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:52316 -- CloseStatus[code=1006, reason=]
+2023-03-07 09:23:42.568  INFO 1468 --- [XNIO-1 I/O-11] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2023-03-07 09:26:26.191  INFO 1468 --- [XNIO-1 task-1] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:52968
+2023-03-07 09:26:26.194  INFO 1468 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /v3/websocket, client=127.0.0.1
+2023-03-07 09:26:26.196  INFO 1468 --- [XNIO-1 task-1] lavalink.server.io.SocketServer          : Connection successfully established from Pomice/2.1.1
+2023-03-07 09:26:26.200  INFO 1468 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /version, client=127.0.0.1
+2023-03-07 09:27:26.458  INFO 1468 --- [XNIO-1 I/O-14] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:52968 -- CloseStatus[code=1006, reason=]
+2023-03-07 09:27:26.458  INFO 1468 --- [XNIO-1 I/O-14] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2023-03-07 09:27:30.699  INFO 1468 --- [XNIO-1 task-1] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:34846
+2023-03-07 09:27:30.701  INFO 1468 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /v3/websocket, client=127.0.0.1
+2023-03-07 09:27:30.703  INFO 1468 --- [XNIO-1 task-1] lavalink.server.io.SocketServer          : Connection successfully established from Pomice/2.1.1
+2023-03-07 09:27:30.705  INFO 1468 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /version, client=127.0.0.1
+2023-03-07 09:28:31.841  INFO 1468 --- [XNIO-1 I/O-5] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:34846 -- CloseStatus[code=1006, reason=]
+2023-03-07 09:28:31.841  INFO 1468 --- [XNIO-1 I/O-5] lavalink.server.io.SocketContext         : Shutting down 0 playing players.

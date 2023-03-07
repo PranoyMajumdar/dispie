@@ -105,13 +105,17 @@ class MusicClient:
         Parameters:
         - player_type: Type of the player.
         """
-        # TODO: Return later
+        return {
+            "no_playing": self._no_playing_embed,
+            "playing": self._playing_embed,
+            "paused": self._paused_embed
+        }[player_type]
 
 
     def get_message(self, message_id: int, channel_id: int) -> Optional[Message]:
         if (mable := self.bot.get_partial_messageable(channel_id)):
             if (message := mable.get_partial_message(message_id)):
-                return Message
+                return message
 
 
     async def setup_player_embed(self, channel: TextChannel) -> Message:
