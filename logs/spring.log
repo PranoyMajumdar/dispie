@@ -1,0 +1,125 @@
+2023-03-07 02:54:26.323  INFO 1896 --- [main] lavalink.server.Launcher                 : Starting Launcher using Java 11.0.17 on pranoymajumdar-dispie-tr6weppi1e4 with PID 1896 (/workspace/dispie/Lavalink.jar started by gitpod in /workspace/dispie)
+2023-03-07 02:54:26.410  INFO 1896 --- [main] lavalink.server.Launcher                 : No active profile set, falling back to 1 default profile: "default"
+2023-03-07 02:54:30.326  INFO 1896 --- [main] lavalink.server.Launcher                 : Started Launcher in 5.596 seconds (JVM running for 7.14)
+2023-03-07 02:54:30.405  INFO 1896 --- [main] lavalink.server.Launcher                 : You can safely ignore the big red warning about illegal reflection. See https://github.com/freyacodes/Lavalink/issues/295
+2023-03-07 02:54:30.715  INFO 1896 --- [main] lavalink.server.Launcher                 : 
+
+[32m       .  [31m _                  _ _       _    [32m__ _ _
+[32m      /\\ [31m| | __ ___   ____ _| (_)_ __ | | __[32m\ \ \ \
+[32m     ( ( )[31m| |/ _` \ \ / / _` | | | '_ \| |/ /[32m \ \ \ \
+[32m      \\/ [31m| | (_| |\ V / (_| | | | | | |   < [32m  ) ) ) )
+[32m       '  [31m|_|\__,_| \_/ \__,_|_|_|_| |_|_|\_\[32m / / / /
+[0m    =========================================[32m/_/_/_/[0m
+
+	Version:        3.7.5
+	Build time:     06.03.2023 12:02:05 UTC
+	Branch          HEAD
+	Commit:         c00286d
+	Commit time:    06.03.2023 11:59:46 UTC
+	JVM:            11.0.17
+	Lavaplayer      1.4.0-original
+
+2023-03-07 02:54:30.803  INFO 1896 --- [main] lavalink.server.Launcher                 : No active profile set, falling back to 1 default profile: "default"
+2023-03-07 02:54:32.833  WARN 1896 --- [main] io.undertow.websockets.jsr               : UT026010: Buffer pool was not set on WebSocketDeploymentInfo, the default pool will be used
+2023-03-07 02:54:32.915  INFO 1896 --- [main] io.undertow.servlet                      : Initializing Spring embedded WebApplicationContext
+2023-03-07 02:54:32.916  INFO 1896 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2106 ms
+2023-03-07 02:54:33.150  WARN 1896 --- [main] l.server.config.SentryConfiguration      : Turning off sentry
+2023-03-07 02:54:33.605  INFO 1896 --- [main] c.s.d.l.tools.GarbageCollectionMonitor   : GC monitoring enabled, reporting results every 2 minutes.
+2023-03-07 02:54:34.343  INFO 1896 --- [main] lavalink.server.config.KoeConfiguration  : OS: LINUX, Arch: X86_64
+2023-03-07 02:54:34.344  INFO 1896 --- [main] lavalink.server.config.KoeConfiguration  : Enabling JDA-NAS
+2023-03-07 02:54:34.350  INFO 1896 --- [main] c.s.l.c.natives.NativeLibraryLoader      : Native library udpqueue: loading with filter null
+2023-03-07 02:54:34.357  INFO 1896 --- [main] c.s.l.c.natives.NativeLibraryLoader      : Native library udpqueue: successfully loaded.
+2023-03-07 02:54:34.751  INFO 1896 --- [main] io.undertow                              : starting server: Undertow - 2.2.16.Final
+2023-03-07 02:54:34.806  INFO 1896 --- [main] org.xnio                                 : XNIO version 3.8.6.Final
+2023-03-07 02:54:34.821  INFO 1896 --- [main] org.xnio.nio                             : XNIO NIO Implementation Version 3.8.6.Final
+2023-03-07 02:54:35.142  INFO 1896 --- [main] org.jboss.threads                        : JBoss Threads version 3.1.0.Final
+2023-03-07 02:54:35.225  INFO 1896 --- [main] o.s.b.w.e.undertow.UndertowWebServer     : Undertow started on port(s) 3030 (http)
+2023-03-07 02:54:35.233  INFO 1896 --- [main] lavalink.server.Launcher                 : Started Launcher in 4.821 seconds (JVM running for 12.047)
+2023-03-07 02:54:35.235  INFO 1896 --- [main] lavalink.server.Launcher                 : Lavalink is ready to accept connections.
+2023-03-07 02:54:58.180  INFO 1896 --- [XNIO-1 task-1] io.undertow.servlet                      : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-03-07 02:54:58.182  INFO 1896 --- [XNIO-1 task-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-03-07 02:54:58.184  INFO 1896 --- [XNIO-1 task-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2023-03-07 02:54:58.224  INFO 1896 --- [XNIO-1 task-1] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:51300
+2023-03-07 02:54:58.247  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /v3/websocket, client=127.0.0.1
+2023-03-07 02:54:58.284  INFO 1896 --- [XNIO-1 task-2] lavalink.server.io.RequestLoggingFilter  : GET /version, client=127.0.0.1
+2023-03-07 02:54:58.470  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.SocketServer          : Connection successfully established from Pomice/2.1.1
+2023-03-07 02:56:03.403  INFO 1896 --- [XNIO-1 I/O-10] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:51300 -- CloseStatus[code=1006, reason=]
+2023-03-07 02:56:03.403  INFO 1896 --- [XNIO-1 I/O-10] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2023-03-07 02:56:26.544  INFO 1896 --- [XNIO-1 task-1] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:35584
+2023-03-07 02:56:26.548  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /v3/websocket, client=127.0.0.1
+2023-03-07 02:56:26.551  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.SocketServer          : Connection successfully established from Pomice/2.1.1
+2023-03-07 02:56:26.555  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /version, client=127.0.0.1
+2023-03-07 02:57:06.324  INFO 1896 --- [XNIO-1 I/O-3] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:35584 -- CloseStatus[code=1006, reason=]
+2023-03-07 02:57:06.325  INFO 1896 --- [XNIO-1 I/O-3] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2023-03-07 02:57:10.722  INFO 1896 --- [XNIO-1 task-1] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:54720
+2023-03-07 02:57:10.726  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /v3/websocket, client=127.0.0.1
+2023-03-07 02:57:10.728  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.SocketServer          : Connection successfully established from Pomice/2.1.1
+2023-03-07 02:57:10.731  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /version, client=127.0.0.1
+2023-03-07 02:57:36.412  INFO 1896 --- [XNIO-1 I/O-8] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:54720 -- CloseStatus[code=1006, reason=]
+2023-03-07 02:57:36.413  INFO 1896 --- [XNIO-1 I/O-8] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2023-03-07 02:57:40.846  INFO 1896 --- [XNIO-1 task-1] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:37178
+2023-03-07 02:57:40.848  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /v3/websocket, client=127.0.0.1
+2023-03-07 02:57:40.850  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.SocketServer          : Connection successfully established from Pomice/2.1.1
+2023-03-07 02:57:40.853  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /version, client=127.0.0.1
+2023-03-07 02:57:54.134  INFO 1896 --- [XNIO-1 I/O-8] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:37178 -- CloseStatus[code=1006, reason=]
+2023-03-07 02:57:54.135  INFO 1896 --- [XNIO-1 I/O-8] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2023-03-07 02:57:58.546  INFO 1896 --- [XNIO-1 task-1] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:49882
+2023-03-07 02:57:58.547  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /v3/websocket, client=127.0.0.1
+2023-03-07 02:57:58.549  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.SocketServer          : Connection successfully established from Pomice/2.1.1
+2023-03-07 02:57:58.551  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /version, client=127.0.0.1
+2023-03-07 02:59:11.521  INFO 1896 --- [XNIO-1 I/O-7] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:49882 -- CloseStatus[code=1006, reason=]
+2023-03-07 02:59:11.522  INFO 1896 --- [XNIO-1 I/O-7] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2023-03-07 02:59:15.625  INFO 1896 --- [XNIO-1 task-1] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:43050
+2023-03-07 02:59:15.627  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /v3/websocket, client=127.0.0.1
+2023-03-07 02:59:15.629  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.SocketServer          : Connection successfully established from Pomice/2.1.1
+2023-03-07 02:59:15.633  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /version, client=127.0.0.1
+2023-03-07 03:01:03.078  INFO 1896 --- [XNIO-1 I/O-2] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:43050 -- CloseStatus[code=1006, reason=]
+2023-03-07 03:01:03.079  INFO 1896 --- [XNIO-1 I/O-2] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2023-03-07 03:01:07.530  INFO 1896 --- [XNIO-1 task-1] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:32886
+2023-03-07 03:01:07.533  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /v3/websocket, client=127.0.0.1
+2023-03-07 03:01:07.536  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.SocketServer          : Connection successfully established from Pomice/2.1.1
+2023-03-07 03:01:07.538  INFO 1896 --- [XNIO-1 task-2] lavalink.server.io.RequestLoggingFilter  : GET /version, client=127.0.0.1
+2023-03-07 03:02:04.345  INFO 1896 --- [XNIO-1 I/O-4] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:32886 -- CloseStatus[code=1006, reason=]
+2023-03-07 03:02:04.345  INFO 1896 --- [XNIO-1 I/O-4] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2023-03-07 03:02:09.319  INFO 1896 --- [XNIO-1 task-1] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:37732
+2023-03-07 03:02:09.326  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /v3/websocket, client=127.0.0.1
+2023-03-07 03:02:09.334  INFO 1896 --- [XNIO-1 task-2] lavalink.server.io.RequestLoggingFilter  : GET /version, client=127.0.0.1
+2023-03-07 03:02:09.336  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.SocketServer          : Connection successfully established from Pomice/2.1.1
+2023-03-07 03:20:02.151  INFO 1896 --- [XNIO-1 I/O-9] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:37732 -- CloseStatus[code=1006, reason=]
+2023-03-07 03:20:02.152  INFO 1896 --- [XNIO-1 I/O-9] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2023-03-07 03:20:27.028  INFO 1896 --- [XNIO-1 task-1] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:42374
+2023-03-07 03:20:27.031  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /v3/websocket, client=127.0.0.1
+2023-03-07 03:20:27.034  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.SocketServer          : Connection successfully established from Pomice/2.1.1
+2023-03-07 03:20:27.037  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /version, client=127.0.0.1
+2023-03-07 03:21:59.184  INFO 1896 --- [XNIO-1 I/O-5] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:42374 -- CloseStatus[code=1006, reason=]
+2023-03-07 03:21:59.184  INFO 1896 --- [XNIO-1 I/O-5] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2023-03-07 03:22:03.453  INFO 1896 --- [XNIO-1 task-1] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:42804
+2023-03-07 03:22:03.454  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /v3/websocket, client=127.0.0.1
+2023-03-07 03:22:03.456  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.SocketServer          : Connection successfully established from Pomice/2.1.1
+2023-03-07 03:22:03.461  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /version, client=127.0.0.1
+2023-03-07 03:22:55.900  INFO 1896 --- [XNIO-1 I/O-16] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:42804 -- CloseStatus[code=1006, reason=]
+2023-03-07 03:22:55.901  INFO 1896 --- [XNIO-1 I/O-16] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2023-03-07 03:23:00.112  INFO 1896 --- [XNIO-1 task-1] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:59686
+2023-03-07 03:23:00.114  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /v3/websocket, client=127.0.0.1
+2023-03-07 03:23:00.116  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.SocketServer          : Connection successfully established from Pomice/2.1.1
+2023-03-07 03:23:00.118  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /version, client=127.0.0.1
+2023-03-07 03:23:29.191  INFO 1896 --- [XNIO-1 I/O-16] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:59686 -- CloseStatus[code=1006, reason=]
+2023-03-07 03:23:29.191  INFO 1896 --- [XNIO-1 I/O-16] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2023-03-07 03:23:33.361  INFO 1896 --- [XNIO-1 task-1] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:36708
+2023-03-07 03:23:33.363  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /v3/websocket, client=127.0.0.1
+2023-03-07 03:23:33.365  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.SocketServer          : Connection successfully established from Pomice/2.1.1
+2023-03-07 03:23:33.368  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /version, client=127.0.0.1
+2023-03-07 03:25:00.489  INFO 1896 --- [XNIO-1 I/O-9] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:36708 -- CloseStatus[code=1006, reason=]
+2023-03-07 03:25:00.490  INFO 1896 --- [XNIO-1 I/O-9] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2023-03-07 03:25:04.620  INFO 1896 --- [XNIO-1 task-1] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:60298
+2023-03-07 03:25:04.625  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.RequestLoggingFilter  : GET /v3/websocket, client=127.0.0.1
+2023-03-07 03:25:04.628  INFO 1896 --- [XNIO-1 task-1] lavalink.server.io.SocketServer          : Connection successfully established from Pomice/2.1.1
+2023-03-07 03:25:04.637  INFO 1896 --- [XNIO-1 task-2] lavalink.server.io.RequestLoggingFilter  : GET /version, client=127.0.0.1
+2023-03-07 03:26:42.473  INFO 1896 --- [XNIO-1 I/O-7] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:60298 -- CloseStatus[code=1006, reason=]
+2023-03-07 03:26:42.474  INFO 1896 --- [XNIO-1 I/O-7] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2023-03-07 03:26:46.500  INFO 1896 --- [XNIO-1 task-2] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:59810
+2023-03-07 03:26:46.502  INFO 1896 --- [XNIO-1 task-2] lavalink.server.io.RequestLoggingFilter  : GET /v3/websocket, client=127.0.0.1
+2023-03-07 03:26:46.504  INFO 1896 --- [XNIO-1 task-2] lavalink.server.io.SocketServer          : Connection successfully established from Pomice/2.1.1
+2023-03-07 03:26:46.507  INFO 1896 --- [XNIO-1 task-2] lavalink.server.io.RequestLoggingFilter  : GET /version, client=127.0.0.1
+2023-03-07 03:26:58.801  INFO 1896 --- [XNIO-1 I/O-14] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:59810 -- CloseStatus[code=1006, reason=]
+2023-03-07 03:26:58.802  INFO 1896 --- [XNIO-1 I/O-14] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
