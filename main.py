@@ -1,55 +1,34 @@
-from discord.ext import commands
-from dispie.music import MusicClient, Node
-from config import token
-from pomice import Track
-from rich.logging import Handler, RichHandler, Highlighter
+from typing import Any
 import discord
+from discord.ext import commands
+from dispie.prompts import ButtonPrompt
 
-intents = discord.Intents.all()
-intents.message_content = True
-bot = commands.Bot(command_prefix="!", intents=intents)
+bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
-music = MusicClient(
-    bot=bot,
-    nodes=
-        {
-        "host": "127.0.0.1",
-        "port": 3030,
-        "password":"youshallnotpass",
-        "identifier":"MAIN"
-    }
-)
-
-
-discord.utils.setup_logging(
-    handler=RichHandler(
-        show_time=False
-    )
-)
-
-database = {
-    "channel_id": 1047852590060285973,
-    "message_id": 1082595376487485470
-}
-
-@bot.event
-async def on_message(message: discord.Message):
-    if message.id == database['message_id'] and message.channel.id == database['channel_id']:
-        await music.handle_on_message(message, database['message_id'])
-    await bot.process_commands(message)
 
 @bot.event
 async def on_ready():
-    await music.start_nodes()
+    print("Bot is online.")
+
 
 @bot.command()
-async def setup(ctx: commands.Context, channel: discord.TextChannel):
-    msg = await music.setup_player_embed(channel)
-    print(msg.id, channel.id)
+async def bp(ctx: commands.Context[Any]):
+    prompt = ButtonPrompt(
+        author=ctx.author,
+        true_button_label="Hmmmmm",
+        false_button_emoji="🖕",
+        auto_disable=True,
+        timeout=2,
+    )
+    msg = await ctx.send("Choose a bool!", view=prompt)
+    prompt.message = msg
+    await prompt.wait()
+    if prompt.value != None:
+        await ctx.send(f"You choosed: {prompt.value}")
+        return await msg.delete()
+    await ctx.send("Time out...")
 
-async def main():
-    await bot.start(token)
 
-if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
+bot.run(
+    token="MTA5MjM3NDk5MjA3Njk0NzUwOA.GEjah4.6dU3JGacZTRQ47IecynQSVx-7NZG9etrRSrTm4"
+)
