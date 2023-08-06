@@ -18,7 +18,7 @@ async def bp(ctx: commands.Context[Any]):
         true_button_label="Hmmmmm",
         false_button_emoji="🖕",
         auto_disable=True,
-        timeout=2,
+        timeout=2
     )
     msg = await ctx.send("Choose a bool!", view=prompt)
     prompt.message = msg

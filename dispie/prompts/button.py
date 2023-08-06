@@ -16,24 +16,24 @@ class ButtonPrompt(View):
 
     Parameters
     ----------
-    author : Union[User, Member]
+    author: User | Member
         The user or member who triggered the prompt.
-    timeout : Optional[float]
+    timeout: Optional[float]
         Timeout for the view in seconds. Defaults to 180 seconds.
-    button_disable_style : ButtonStyle
+    button_disable_style: ButtonStyle
         The style of the buttons when they are disabled. Defaults to ButtonStyle.gray.
-    auto_delete : bool
+    auto_delete: bool
         If set to `True` and this view has a `discord.Message` and `discord.WebhookMessage` attribute,
         then the message will be deleted after completion of the timeout.
-    auto_disable : bool
+    auto_disable: bool
         If set to `True` and this view has a `discord.Message` and `discord.WebhookMessage` attribute,
         then the buttons will be disabled after completion of the timeout.
-    **data : Any
+    **data: Any
         Additional data for the buttons.
 
     Attributes
     ----------
-    value : Union[bool, None]
+    value: bool | None
         The result of the button prompt, either True, False, or None.
 
     Example
@@ -108,11 +108,11 @@ class ButtonPrompt(View):
                 button_obj.emoji = emoji_value
 
     @button(label="Yes", style=ButtonStyle.green)
-    async def true_button(self, interaction: Interaction, button: Button[Any]):
+    async def true_button(self, interaction: Interaction, button: Button[View]):
         self.value = True
         self.stop()
 
     @button(label="No", style=ButtonStyle.red)
-    async def false_button(self, interaction: Interaction, button: Button[Any]):
+    async def false_button(self, interaction: Interaction, button: Button[View]):
         self.value = False
         self.stop()
