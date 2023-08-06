@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import TYPE_CHECKING, Any, Optional
 from dispie import View
 from discord import ButtonStyle

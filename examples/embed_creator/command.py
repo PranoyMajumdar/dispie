@@ -13,17 +13,22 @@ async def embed(ctx: commands.Context):
     view = EmbedCreator(bot=bot)
     await ctx.send(embed=view.get_default_embed, view=view)
 
+
 @bot.command()
 async def embed2(ctx: commands.Context):
     """Embed Generator With Default Embed And Author Check So Only The Invoker Can Use The Editor"""
     # Creates a instance of EmbedCreator class
     view = EmbedCreator(bot=bot)
+
     async def check(interaction: discord.Interaction):
-            if interaction.user.id == ctx.author.id:
-                return True
-            else:
-                await interaction.response.send_message(f"Only {ctx.author} can use this interaction!", ephemeral=True)
-                return False
+        if interaction.user.id == ctx.author.id:
+            return True
+        else:
+            await interaction.response.send_message(
+                f"Only {ctx.author} can use this interaction!", ephemeral=True
+            )
+            return False
+
     view.interaction_check = check
     await ctx.send(embed=view.get_default_embed, view=view)
 
@@ -36,6 +41,3 @@ async def embed3(ctx: commands.Context):
     # Creates a instance of EmbedCreator class
     view = EmbedCreator(bot=bot, **options)
     await ctx.send(embed=view.get_default_embed, view=view)
-
-
-

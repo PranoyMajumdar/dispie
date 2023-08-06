@@ -25,6 +25,4 @@ var/
 *.egg
 
 # Our configuration files
-config.py
 main.py
-test.py

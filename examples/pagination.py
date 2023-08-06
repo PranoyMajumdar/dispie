@@ -2,7 +2,8 @@ from discord.ext import commands
 import discord
 from dispie import Paginator
 
-bot = commands.Bot(command_prefix='',intents=discord.Intents.all())
+bot = commands.Bot(command_prefix="", intents=discord.Intents.all())
+
 
 @bot.command()
 async def page1(ctx: commands.Context):
@@ -10,7 +11,7 @@ async def page1(ctx: commands.Context):
     embeds = list()
     for i in range(1000):
         embeds.append(discord.Embed(title=f"Page {i+1}"))
-    
+
     pages = Paginator(embeds)
     await pages.start(ctx)
 
@@ -21,8 +22,10 @@ async def page2(ctx: commands.Context):
     lst = [f"Number {i+1}" for i in range(100)]
     embeds = list()
     for lines in discord.utils.as_chunks(lst, 5):
-        embed = discord.Embed(title='Description paginator', description=f"\n".join(lines))
+        embed = discord.Embed(
+            title="Description paginator", description=f"\n".join(lines)
+        )
         embeds.append(embed)
-    
+
     pages = Paginator(embeds)
     await pages.start(ctx)

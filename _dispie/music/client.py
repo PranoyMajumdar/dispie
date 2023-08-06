@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import Literal, Optional
 
 from discord import Embed, Message, TextChannel
@@ -11,6 +9,7 @@ from logging import getLogger
 log = getLogger("Dispie Music Client")
 
 # https://github.com/freyacodes/Lavalink/releases/download/3.7.5/Lavalink.jar
+
 
 class MusicClient:
     """
@@ -97,36 +96,33 @@ class MusicClient:
         """
         self._node_pool = value
 
-
-    def get_player_embed(self, player_type: Literal["no_playing", "playing", "paused"]) -> Embed:
+    def get_player_embed(
+        self, player_type: Literal["no_playing", "playing", "paused"]
+    ) -> Embed:
         """
         Get the embed for the player.
-        
+
         Parameters:
         - player_type: Type of the player.
         """
         return {
             "no_playing": self._no_playing_embed,
             "playing": self._playing_embed,
-            "paused": self._paused_embed
+            "paused": self._paused_embed,
         }[player_type]
 
-
     def get_message(self, message_id: int, channel_id: int) -> Optional[Message]:
-        if (mable := self.bot.get_partial_messageable(channel_id)):
-            if (message := mable.get_partial_message(message_id)):
+        if mable := self.bot.get_partial_messageable(channel_id):
+            if message := mable.get_partial_message(message_id):
                 return message
-
 
     async def setup_player_embed(self, channel: TextChannel) -> Message:
         """
         Setup the player embed.
         Parameters:
-        - channel: The channel you want to setup the player. 
+        - channel: The channel you want to setup the player.
         """
-        return await channel.send(
-            embed=self.get_player_embed(player_type="no_playing")
-        )
+        return await channel.send(embed=self.get_player_embed(player_type="no_playing"))
 
     async def handle_on_message(self, message: Message, player_message_id: int) -> None:
         """
@@ -142,8 +138,6 @@ class MusicClient:
             await message.delete()
             return
         await self.bot.process_commands(message)
-        
-
 
     async def handle_track_start(self, track: Track) -> None:
         """
@@ -170,6 +164,6 @@ class MusicClient:
                 host=nodes.get("host"),
                 port=nodes.get("port"),
                 password=nodes.get("password"),
-                identifier=nodes.get("identifier")
+                identifier=nodes.get("identifier"),
             )
             log.info(f"{node._identifier} has been created.")

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import Callable, Dict
 from dispie import ModalInput, SelectPrompt
 from discord import Colour, Embed, HTTPException, Interaction, SelectOption, TextStyle
@@ -27,7 +25,6 @@ class CreatorMethods:
             "addfield": self.add_field,
             "removefield": self.remove_field,
         }
-
 
     async def edit_author(self, interaction: Interaction) -> None:
         """This method edits the embed's author"""
@@ -66,9 +63,7 @@ class CreatorMethods:
                 url=str(modal.children[2]),
             )
         except HTTPException:
-            self.embed.set_author(
-                name=str(modal.children[0])
-            )
+            self.embed.set_author(name=str(modal.children[0]))
 
     async def edit_message(self, interaction: Interaction) -> None:
         """This method edits the embed's message (discord.Embed.title and discord.Embed.description)"""
@@ -161,7 +156,7 @@ class CreatorMethods:
             TextInput(
                 label="Embed Colour",
                 placeholder="The colour you want to display on embed (e.g: #303236)",
-                max_length=20
+                max_length=20,
             )
         )
         await interaction.response.send_modal(modal)
@@ -221,25 +216,25 @@ class CreatorMethods:
 
     async def remove_field(self, interaction: Interaction) -> None:
         if not self.embed.fields:
-            return await interaction.response.send_message("There is no fields to remove.", ephemeral=True)
+            return await interaction.response.send_message(
+                "There is no fields to remove.", ephemeral=True
+            )
         field_options = list()
         for index, field in enumerate(self.embed.fields):
             field_options.append(
                 SelectOption(
-                    label=str(field.name)[0:30],
-                    value=str(index),
-                    emoji="\U0001f5d1"
+                    label=str(field.name)[0:30], value=str(index), emoji="\U0001f5d1"
                 )
             )
         select = SelectPrompt(
             placeholder="Select a field to remove...",
             options=field_options,
             max_values=len(field_options),
-            ephemeral=True
+            ephemeral=True,
         )
         await interaction.response.send_message(view=select, ephemeral=True)
         await select.wait()
-        
+
         if vals := select.values:
             for value in vals:
                 self.embed.remove_field(int(value))

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import TYPE_CHECKING, Any, Optional
 from discord import ButtonStyle, Forbidden, HTTPException, NotFound, ui
 from contextlib import suppress
@@ -23,7 +21,7 @@ class View(ui.View):
 
     button_disable_style ButtonStyle:
         The style of the buttons while they are disabled.
-    
+
     auto_delete Optional[bool]:
         If set to ``True`` and this view has a :class:`discord.Message` or :class:`discord.WebhookMessage` attribute,
         the message will be deleted after the completion of the timeout.
@@ -34,8 +32,9 @@ class View(ui.View):
 
     author Optional[User | Member]:
         If provided, this view can only be controlled by the provided author.
-    
-    Example:
+
+    Example
+    -------
         Creating a custom view with a timeout of 120 seconds and auto-disabling buttons:
 
         ```
@@ -44,6 +43,7 @@ class View(ui.View):
         await ctx.send("Please click the button!", view=view)
         ```
     """
+
     if TYPE_CHECKING:
         message: Message | WebhookMessage | None
 
@@ -51,10 +51,10 @@ class View(ui.View):
         self,
         *,
         timeout: Optional[float] = 180,
-        button_disable_style: ButtonStyle = ButtonStyle.gray,
         auto_delete: bool = False,
         auto_disable: bool = False,
         author: Optional[User | Member] = None,
+        button_disable_style: ButtonStyle = ButtonStyle.gray,
     ):
         super().__init__(timeout=timeout)
         self.message = None

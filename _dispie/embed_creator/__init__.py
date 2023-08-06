@@ -1,8 +1,16 @@
-from __future__ import annotations
-
 from typing import Optional, Any
 
-from discord import ButtonStyle, CategoryChannel, Embed, ForumChannel, HTTPException, Interaction, StageChannel, Colour, SelectOption
+from discord import (
+    ButtonStyle,
+    CategoryChannel,
+    Embed,
+    ForumChannel,
+    HTTPException,
+    Interaction,
+    StageChannel,
+    Colour,
+    SelectOption,
+)
 from discord.ext.commands import Bot
 from discord.ui import Item, Select, select, Button, button, View
 from dispie.embed_creator.methods import CreatorMethods
@@ -109,15 +117,23 @@ class EmbedCreator(View):
             },
         ]
 
-        self.children[0].options = [SelectOption(  # type: ignore
-            **option) for option in self.options_data
+        self.children[0].options = [
+            SelectOption(**option) for option in self.options_data  # type: ignore
         ]
-        self.children[1].label, self.children[1].emoji, self.children[1].style = kwargs.get(  # type: ignore
-            "send_label", 'Send'), kwargs.get("send_emoji", None), kwargs.get("send_style", ButtonStyle.blurple)
-        self.children[2].label, self.children[2].emoji, self.children[2].style = kwargs.get(  # type: ignore
-            "cancel_label", 'Cancel'), kwargs.get("cancel_emoji", None), kwargs.get("cancel_style", ButtonStyle.red)  # type: ignore
+        self.children[1].label, self.children[1].emoji, self.children[1].style = (
+            kwargs.get("send_label", "Send"),  # type: ignore
+            kwargs.get("send_emoji", None),
+            kwargs.get("send_style", ButtonStyle.blurple),
+        )
+        self.children[2].label, self.children[2].emoji, self.children[2].style = (
+            kwargs.get("cancel_label", "Cancel"),  # type: ignore
+            kwargs.get("cancel_emoji", None),
+            kwargs.get("cancel_style", ButtonStyle.red),
+        )  # type: ignore
 
-    async def on_error(self, interaction: Interaction, error: Exception, item: Item[Any]) -> None:
+    async def on_error(
+        self, interaction: Interaction, error: Exception, item: Item[Any]
+    ) -> None:
         if isinstance(error, HTTPException) and error.code == 50035:
             # This will save you from the '50035' error, if any user try to remove all the attr of the embed then HTTP exception will raise with the error code `50035`
             self.embed.description = f"_ _"
@@ -137,16 +153,25 @@ class EmbedCreator(View):
         Returns:
             embed (discord.Embed)
         """
-        embed = Embed(title='This is title',
-                      description="Use the dropdown menu to edit my sections!", colour=Colour.blurple())
-        embed.set_author(name='Welcome to embed builder.',
-                         icon_url="https://cdn.iconscout.com/icon/premium/png-512-thumb/panel-6983404-5721235.png?")
+        embed = Embed(
+            title="This is title",
+            description="Use the dropdown menu to edit my sections!",
+            colour=Colour.blurple(),
+        )
+        embed.set_author(
+            name="Welcome to embed builder.",
+            icon_url="https://cdn.iconscout.com/icon/premium/png-512-thumb/panel-6983404-5721235.png?",
+        )
         embed.set_thumbnail(
-            url="https://cdn.iconscout.com/icon/premium/png-512-thumb/panel-6983404-5721235.png?")
+            url="https://cdn.iconscout.com/icon/premium/png-512-thumb/panel-6983404-5721235.png?"
+        )
         embed.set_image(
-            url="https://imageup.me/images/e44472bd-d742-4d39-8e25-b8ae762160ae.png")
+            url="https://imageup.me/images/e44472bd-d742-4d39-8e25-b8ae762160ae.png"
+        )
         embed.set_footer(
-            text='Footer', icon_url="https://cdn.iconscout.com/icon/premium/png-512-thumb/panel-6983404-5721235.png?")
+            text="Footer",
+            icon_url="https://cdn.iconscout.com/icon/premium/png-512-thumb/panel-6983404-5721235.png?",
+        )
         return embed
 
     @select(placeholder="Edit a section")
@@ -155,7 +180,7 @@ class EmbedCreator(View):
     ) -> None:
         """
         This method is a callback function for the `select` interaction.
-        It is triggered when a user selects an option from the select menu. 
+        It is triggered when a user selects an option from the select menu.
         The method uses the `callbacks` attribute of the `CreatorMethods` class to call the appropriate callback function based on the user's selection.
 
         Parameters:
@@ -169,7 +194,7 @@ class EmbedCreator(View):
     @button()
     async def send_callback(self, interaction: Interaction, button: Button) -> None:
         """
-        This method is a callback function for the `button` interaction. It is triggered when a user clicks on the "send" button. 
+        This method is a callback function for the `button` interaction. It is triggered when a user clicks on the "send" button.
         The method creates a `ChannelSelectPrompt` object and sends it as an ephemeral message to the user. It then waits for the user to select a channel.
         If a channel is selected, the method sends the embed to the selected channel and deletes the original interaction message.
 
@@ -177,19 +202,20 @@ class EmbedCreator(View):
             interaction (discord.Interaction): The interaction object representing the current interaction.
             button (discord.Button): The button object representing the "send" button.
         """
-        prompt = ChannelSelectPrompt(
-            "Select a channel to send this embed...", True, 1)
+        prompt = ChannelSelectPrompt("Select a channel to send this embed...", True, 1)
         await interaction.response.send_message(view=prompt, ephemeral=True)
         await prompt.wait()
         if prompt.values:
-            if not isinstance(prompt.values[0], (StageChannel, ForumChannel, CategoryChannel)):
+            if not isinstance(
+                prompt.values[0], (StageChannel, ForumChannel, CategoryChannel)
+            ):
                 await prompt.values[0].send(embed=self.embed)  # type: ignore
                 await interaction.message.delete()  # type: ignore
 
     @button()
     async def cancel_callback(self, interaction: Interaction, button: Button) -> None:
         """
-        This method is a callback function for the `button` interaction. It is triggered when a user clicks on the "cancel" button. 
+        This method is a callback function for the `button` interaction. It is triggered when a user clicks on the "cancel" button.
         The method deletes the original interaction message and stops the current interaction.
 
         Parameters:

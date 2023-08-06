@@ -1,4 +1,3 @@
-from __future__ import annotations
 from typing import List, Optional
 
 
@@ -19,6 +18,7 @@ class ModalInput(Modal):
         custom_id (str, optional): An optional argument that is passed to the parent Modal class. It is used to specify a custom ID for the modal.
         ephemeral (bool, optional): A boolean indicating whether the modal will be sent as an ephemeral message or not.
     """
+
     def __init__(
         self,
         *,
@@ -45,8 +45,13 @@ class SelectPrompt(View):
         max_values (int, optional): The maximum number of options that can be selected by the user. Default is 1.
         ephemeral (bool, optional): A boolean indicating whether the select prompt will be sent as an ephemeral message or not. Default is False.
     """
+
     def __init__(
-        self, placeholder: str, options: List[SelectOption], max_values: int = 1, ephemeral: bool = False
+        self,
+        placeholder: str,
+        options: List[SelectOption],
+        max_values: int = 1,
+        ephemeral: bool = False,
     ) -> None:
         super().__init__()
         self.children[0].placeholder, self.children[0].max_values, self.children[0].options = placeholder, max_values, options  # type: ignore
@@ -64,6 +69,7 @@ class SelectPrompt(View):
         self.values = select.values
         self.stop()
 
+
 class ChannelSelectPrompt(View):
     """
     This class is a subclass of the `View` class that is intended to be used as a base class for creating a channel select prompt.
@@ -73,15 +79,24 @@ class ChannelSelectPrompt(View):
         ephemeral (bool, optional): A boolean indicating whether the select prompt will be sent as an ephemeral message or not. Default is False.
         max_values (int, optional): The maximum number of options that can be selected by the user. Default is 1.
     """
+
     def __init__(
         self, placeholder: str, ephemeral: bool = False, max_values: int = 1
     ) -> None:
         super().__init__()
         self.values = None
         self.ephemeral = ephemeral
-        self.children[0].placeholder, self.children[0].max_values = placeholder, max_values# type: ignore
+        self.children[0].placeholder, self.children[0].max_values = placeholder, max_values  # type: ignore
 
-    @select(cls=ChannelSelect, channel_types=[ChannelType.text, ChannelType.private_thread, ChannelType.public_thread, ChannelType.news])
+    @select(
+        cls=ChannelSelect,
+        channel_types=[
+            ChannelType.text,
+            ChannelType.private_thread,
+            ChannelType.public_thread,
+            ChannelType.news,
+        ],
+    )
     async def callback(self, interaction: Interaction, select: ChannelSelect):
         await interaction.response.defer(ephemeral=self.ephemeral)
         if self.ephemeral:
@@ -89,6 +104,5 @@ class ChannelSelectPrompt(View):
         else:
             with suppress(Exception):
                 await interaction.message.delete()  # type: ignore
-        self.values = [interaction.guild.get_channel(i.id) for i in select.values] # type: ignore
+        self.values = [interaction.guild.get_channel(i.id) for i in select.values]  # type: ignore
         self.stop()
-        

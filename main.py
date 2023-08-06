@@ -1,7 +1,7 @@
 from typing import Any
 import discord
 from discord.ext import commands
-from dispie.prompts import ButtonPrompt
+from dispie.prompts import ButtonPrompt, SelectPrompt
 
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
@@ -24,11 +24,26 @@ async def bp(ctx: commands.Context[Any]):
     prompt.message = msg
     await prompt.wait()
     if prompt.value != None:
-        await ctx.send(f"You choosed: {prompt.value}")
-        return await msg.delete()
+        return await ctx.send(f"You choosed: {prompt.value}")
+
     await ctx.send("Time out...")
 
 
-bot.run(
-    token="MTA5MjM3NDk5MjA3Njk0NzUwOA.GEjah4.6dU3JGacZTRQ47IecynQSVx-7NZG9etrRSrTm4"
-)
+@bot.command()
+async def sp(ctx: commands.Context[Any]):
+    prompt = SelectPrompt(
+        ctx.author,
+        [
+            discord.SelectOption(label="Ok"),
+            discord.SelectOption(label="Not Okay"),
+        ],
+    )
+
+    msg = await ctx.send("Select a message!", view=prompt)
+    prompt.message = msg
+    await prompt.wait()
+    if prompt.values != None:
+        return await ctx.send(f"You choosed: {prompt.values[0]}")
+    await ctx.send("Time out...")
+
+

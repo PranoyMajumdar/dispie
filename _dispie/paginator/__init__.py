@@ -1,4 +1,3 @@
-from __future__ import annotations
 from typing import Dict, Optional, Union, List, Any, TYPE_CHECKING, Sequence, Union
 
 from discord import Embed, ButtonStyle, utils, Interaction
@@ -8,9 +7,9 @@ from discord.ext.commands import Context
 if TYPE_CHECKING:
     from discord import Message, InteractionMessage, WebhookMessage
 
-__all__ = (
-    "Paginator",
-)
+__all__ = ("Paginator",)
+
+
 class Paginator(View):
     """
     The Paginator class is used for paginating through a list of items, such as list of embeds.
@@ -38,6 +37,7 @@ class Paginator(View):
     start(obj: Union[Context, Interaction]): Starts the paginator and sends the first page. Returns the message object representing the current page.
 
     """
+
     message: Optional[Message] = None
 
     def __init__(
@@ -79,7 +79,7 @@ class Paginator(View):
             return self.pages[page_number]
         else:
             base = page_number * self.per_page
-            return self.pages[base: base + self.per_page]
+            return self.pages[base : base + self.per_page]
 
     def format_page(self, page: Any) -> Any:
         return page
@@ -94,8 +94,7 @@ class Paginator(View):
             kwargs["embeds"] = [formatted_page]
         elif isinstance(formatted_page, list):
             if not all(isinstance(embed, Embed) for embed in formatted_page):
-                raise TypeError(
-                    "All elements in the list must be of type Embed")
+                raise TypeError("All elements in the list must be of type Embed")
 
             kwargs["embeds"] = formatted_page
         elif isinstance(formatted_page, dict):
@@ -141,12 +140,15 @@ class Paginator(View):
                 self.message = await self.ctx.send(**kwargs)
             elif self.interaction is not None:
                 if self.interaction.response.is_done():
-                    self.message = await self.interaction.followup.send(**kwargs, view=self)
+                    self.message = await self.interaction.followup.send(
+                        **kwargs, view=self
+                    )
                 else:
                     await self.interaction.response.send_message(**kwargs, view=self)
                     self.message = await self.interaction.original_response()
             else:
                 raise RuntimeError(
-                    "Cannot start a paginator without a context or interaction.")
+                    "Cannot start a paginator without a context or interaction."
+                )
 
         return self.message
