@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Optional
 from discord import ButtonStyle, Forbidden, HTTPException, NotFound, ui
 from contextlib import suppress
@@ -30,7 +31,7 @@ class View(ui.View):
         If set to ``True`` and this view has a :class:`discord.Message` or :class:`discord.WebhookMessage` attribute,
         the components will be disabled after the completion of the timeout.
 
-    author Optional[User | Member]:
+    author User | Member | None:
         If provided, this view can only be controlled by the provided author.
 
     Example
@@ -53,7 +54,7 @@ class View(ui.View):
         timeout: Optional[float] = 180,
         auto_delete: bool = False,
         auto_disable: bool = False,
-        author: Optional[User | Member] = None,
+        author: User | Member | None = None,
         button_disable_style: ButtonStyle = ButtonStyle.gray,
     ):
         super().__init__(timeout=timeout)
