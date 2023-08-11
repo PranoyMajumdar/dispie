@@ -38,21 +38,6 @@ class ButtonPrompt(View):
     value: bool | None
         The result of the button prompt, either True, False, or None.
 
-    Example
-    -------
-    To create a ButtonPrompt and wait for the user to click a button:
-
-    ```
-    prompt = ButtonPrompt(author, auto_delete=True)
-    message = await ctx.send("Choose an option!", view=prompt)
-    prompt.message = message
-    await prompt.wait()
-    if prompt.value is not None:
-        await ctx.send(f"You chose: {prompt.value}!")
-    else:
-        await ctx.send("Timeout...")
-    ```
-
     Note
     ----
     The prompt will be active until the user clicks one of the buttons.
@@ -113,8 +98,12 @@ class ButtonPrompt(View):
     async def true_button(self, interaction: Interaction, button: Button[View]):
         self.value = True
         self.stop()
+        if interaction.message is not None:
+            return await interaction.message.delete()
 
     @button(label="No", style=ButtonStyle.red)
     async def false_button(self, interaction: Interaction, button: Button[View]):
         self.value = False
         self.stop()
+        if interaction.message is not None:
+            return await interaction.message.delete()
