@@ -8,6 +8,7 @@ from discord.ui import button
 if TYPE_CHECKING:
     from discord import User, Member, Interaction
     from discord.ui import Button
+    from typing_extensions import Self
 
 
 __all__ = ("ButtonPrompt",)
@@ -95,14 +96,14 @@ class ButtonPrompt(View):
                 button_obj.emoji = emoji_value
 
     @button(label="Yes", style=ButtonStyle.green)
-    async def true_button(self, interaction: Interaction, button: Button[View]):
+    async def true_button(self, interaction: Interaction, button: Button[Self]):
         self.value = True
         self.stop()
         if interaction.message is not None:
             return await interaction.message.delete()
 
     @button(label="No", style=ButtonStyle.red)
-    async def false_button(self, interaction: Interaction, button: Button[View]):
+    async def false_button(self, interaction: Interaction, button: Button[Self]):
         self.value = False
         self.stop()
         if interaction.message is not None:

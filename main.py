@@ -8,6 +8,7 @@ from dispie.prompts import (
     RoleSelectPrompt,
     UserSelectPrompt,
     MentionableSelectPrompt,
+    ModalPrompt,
 )
 
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
@@ -16,6 +17,7 @@ bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 @bot.event
 async def on_ready():
     print("Bot is online.")
+    await bot.tree.sync()
 
 
 @bot.command()
@@ -116,4 +118,11 @@ async def mp(ctx: commands.Context[Any]):
     await ctx.send("Time out...")
 
 
-bot.run("MTA5MjM3NDk5MjA3Njk0NzUwOA.G4aEMR.zBgaHNhXs0G1URzy8-qCJa38QJLn5toPdWmKsA")
+@bot.tree.command()
+async def mop(interaction: discord.Interaction):
+    prompt = ModalPrompt(title="Test Modal")
+    name = prompt.add_input(discord.ui.TextInput(label="Okk"))
+    await interaction.response.send_modal(prompt)
+    await prompt.wait()
+    await interaction.followup.send(f"Your name: {name}")
+
