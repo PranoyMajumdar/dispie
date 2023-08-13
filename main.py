@@ -134,4 +134,3 @@ async def c(ctx: commands.Context[Any]):
     await EmbedCreator(author=ctx.author).send(ctx)
 
 
-bot.run("MTA5MjM3NDk5MjA3Njk0NzUwOA.GLSEwa.5LSeTymkW7D47L4uPc4iNzRFSPwTTFplJTy6r4")
