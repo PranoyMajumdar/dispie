@@ -11,6 +11,8 @@ from dispie.prompts import (
     ModalPrompt,
 )
 
+from dispie.embed_creator import EmbedCreator
+
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
 
@@ -126,3 +128,10 @@ async def mop(interaction: discord.Interaction):
     await prompt.wait()
     await interaction.followup.send(f"Your name: {name}")
 
+
+@bot.command()
+async def c(ctx: commands.Context[Any]):
+    await EmbedCreator(author=ctx.author).send(ctx)
+
+
+bot.run("MTA5MjM3NDk5MjA3Njk0NzUwOA.GLSEwa.5LSeTymkW7D47L4uPc4iNzRFSPwTTFplJTy6r4")

@@ -32,6 +32,7 @@ class ModalPrompt(Modal):
     The prompt will be active until the user clicks one of the buttons.
 
     """
+
     def __init__(
         self,
         *,
@@ -40,15 +41,11 @@ class ModalPrompt(Modal):
         custom_id: str = "modal_input",
     ) -> None:
         super().__init__(title=title, timeout=timeout, custom_id=custom_id)
-        
+
     def add_input(self, item: TextInput[Self]):
         self.add_item(item)
         return item
-    
 
     async def on_submit(self, interaction: Interaction, /) -> None:
         with suppress(Exception):
             await interaction.response.defer()
-
-
-
