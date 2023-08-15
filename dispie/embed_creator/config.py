@@ -6,13 +6,21 @@ from typing import Any, TypeAlias, Union
 from discord import ButtonStyle
 from discord import Emoji, PartialEmoji
 
+
 __all__ = ("EmbedCreatorConfig", "SelectOptionData")
 
 
 EmojiType: TypeAlias = Union[str, Emoji, PartialEmoji, None]
 
 
-@dataclass(eq=False, kw_only=True)
+@dataclass(eq=False, slots=True, kw_only=True)
+class ModalData:
+    author_title: str = field(default="Edit Embed Author")
+    author_name_label: str = field(default="Author Name")
+    author_url_label: str = field(default="Author Url")
+
+
+@dataclass(eq=False, slots=True, kw_only=True)
 class SelectOptionData:
     author_label: str = field(default="Edit Author")
     author_description: str | None = field(default="Edits the embed author name.")
@@ -115,15 +123,42 @@ class SelectOptionData:
         ]
 
 
-@dataclass(eq=False, kw_only=True)
+@dataclass(eq=False, slots=True, kw_only=True)
+class EmbedCreatorMessages:
+    max_embed_error: str = field(default="You cannot add more than 10 embeds.")
+
+
+
+@dataclass(eq=False, slots=True, kw_only=True)
+class EmbedMakerConfig:
+
+    save_button_label: str | None = field(default="Save")
+    save_button_style: ButtonStyle = field(default=ButtonStyle.blurple)
+    save_button_emoji: str | None = field(default=None)
+
+    back_button_label: str | None = field(default="Back")
+    back_button_style: ButtonStyle = field(default=ButtonStyle.blurple)
+    back_button_emoji: str | None = field(default=None)
+
+    placeholder: str | None = field(default="Choose an option...")
+    options: SelectOptionData = field(default_factory=SelectOptionData)
+    modal: ModalData = field(default_factory=ModalData)
+
+
+@dataclass(eq=False, slots=True, kw_only=True)
 class EmbedCreatorConfig:
     placeholder: str | None = field(default="Choose an option...")
+
     send_button_label: str | None = field(default="Send")
     send_button_style: ButtonStyle = field(default=ButtonStyle.blurple)
     send_button_emoji: str | None = field(default=None)
 
-    cancel_button_label: str | None = field(default="Cancel")
-    cancel_button_style: ButtonStyle = field(default=ButtonStyle.danger)
-    cancel_button_emoji: str | None = field(default=None)
+    add_embed_button_label: str | None = field(default="Add Embed")
+    add_embed_button_style: ButtonStyle = field(default=ButtonStyle.blurple)
+    add_embed_button_emoji: str | None = field(default=None)
 
-    options: SelectOptionData = field(default_factory=SelectOptionData)
+    options_emoji: EmojiType = field(default="🔸")
+    options_description: str | None = field(default=None)
+
+    maker: EmbedMakerConfig = field(default_factory=EmbedMakerConfig)
+    messages: EmbedCreatorMessages = field(default_factory=EmbedCreatorMessages)

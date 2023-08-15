@@ -1,19 +1,15 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Any
-
-
-from dispie.embed_creator import EmbedCreatorConfig
-from discord import ButtonStyle, Embed, SelectOption, Colour
-from discord.ui import select, button
+from typing import TYPE_CHECKING, Any, Coroutine, Callable, Self
+from discord import ButtonStyle, SelectOption
 from discord.ext import commands
+from discord.ui import button, select
 from dispie import View
-
+from .embed import Embed
+from .config import EmbedCreatorConfig
+from discord.ui import Button, Select
 
 if TYPE_CHECKING:
-    from discord import User, Member, Interaction, Message, WebhookMessage
-    from discord.ui import Select, Button
-    from discord.ui.item import V
-
+    from discord import Member, User, Interaction
 
 __all__ = ("EmbedCreator",)
 
@@ -27,7 +23,7 @@ class EmbedCreator(View):
         auto_disable: bool = False,
         author: User | Member | None = None,
         button_disable_style: ButtonStyle = ButtonStyle.gray,
-        embed: Embed | None = None,
+        embed: Embed = Embed(),
         config: EmbedCreatorConfig = EmbedCreatorConfig(),
     ):
         super().__init__(
@@ -37,77 +33,167 @@ class EmbedCreator(View):
             author=author,
             button_disable_style=button_disable_style,
         )
+        self.embed = embed
         self.config = config
-        self.embed = embed or self.get_default_embed
+        self.embeds: list[Embed] = list()
+        self.current_embed = 0
+        self._init_select_options()
         self._init_creator()
-        self.message: Message | WebhookMessage | None = None
 
-    @property
-    def get_default_embed(self) -> Embed:
-        """Creates a default embed for the creator."""
-        embed = Embed(
-            title="This is title",
-            description="Use the dropdown menu to edit my sections!",
-            colour=Colour.blurple(),
-        )
-        embed.set_author(
-            name="Welcome to embed builder.",
-            icon_url="https://cdn.iconscout.com/icon/premium/png-512-thumb/panel-6983404-5721235.png?",
-        )
-        embed.set_thumbnail(
-            url="https://cdn.iconscout.com/icon/premium/png-512-thumb/panel-6983404-5721235.png?"
-        )
-        embed.set_image(
-            url="https://imageup.me/images/e44472bd-d742-4d39-8e25-b8ae762160ae.png"
-        )
-        embed.set_footer(
-            text="Footer",
-            icon_url="https://cdn.iconscout.com/icon/premium/png-512-thumb/panel-6983404-5721235.png?",
-        )
-        return embed
+    def _init_select_options(self) -> None:
+        options = [SelectOption(label=i.name) for i in self.embeds]
+        self._embeds_select.options = options
 
     def _init_creator(self) -> None:
-        """Initialize the creator."""
-        self.creator_select.placeholder = self.config.placeholder
-        self.creator_select.options = [
-            SelectOption(**i) for i in self.config.options.get_list()
-        ]
-        self.send_button.label = self.config.send_button_label
-        self.send_button.style = self.config.send_button_style
-        self.send_button.emoji = self.config.send_button_emoji
+        self._embeds_select.placeholder = self.config.placeholder
 
-        self.cancel_button.label = self.config.cancel_button_label
-        self.cancel_button.style = self.config.cancel_button_style
-        self.cancel_button.emoji = self.config.cancel_button_emoji
+        self._send_button.label = self.config.send_button_label
+        self._send_button.style = self.config.send_button_style
+        self._send_button.emoji = self.config.send_button_emoji
+
+        self._add_embed_button.label = self.config.add_embed_button_label
+        self._add_embed_button.style = self.config.add_embed_button_style
+        self._add_embed_button.emoji = self.config.add_embed_button_emoji
+
+    @property
+    def total_embed(self) -> int:
+        return len(self.embeds)
+
+    @property
+    def get_current_embed(self) -> Embed:
+        return self.embeds[self.current_embed]
+
+    def get_embed(self, name: str) -> Embed | None:
+        return next((x for x in self.embeds if x.name == name), None)
+
+    def add_embed(self, embed: Embed) -> Embed:
+        self.embeds.append(embed)
+        embed.name = f"Embed {self.total_embed}"
+        self.current_embed = self.total_embed - 1
+        return embed
 
     async def send(
-        self, ctx: Interaction | commands.Context[Any]
-    ) -> Message | WebhookMessage | None:
-        """Send the creator."""
+        self,
+        ctx: Interaction | commands.Context[Any],
+        embed: Embed = Embed(),
+    ):
+        self.add_embed(embed)
+        self._init_select_options()
         if isinstance(ctx, commands.Context):
-            self.message = await ctx.send(embed=self.embed, view=self)
+            await ctx.send(embed=self.get_current_embed, view=self)
         else:
-            await ctx.response.send_message(
-                "Embed creator has been sent successfully.", ephemeral=True
-            )
-            self.message = await ctx.followup.send(embed=self.embed, view=self)
+            await ctx.response.send_message(embeds=self.embeds, view=self)
 
-        return self.message
+    async def refresh_creator(self, interaction: Interaction):
+        assert interaction.message is not None
+        self._init_select_options()
+        await interaction.message.edit(embeds=self.embeds, view=self)
 
     @select()
-    async def creator_select(self, interaction: Interaction, select: Select[V]):
+    async def _embeds_select(self, interaction: Interaction, select: Select[Any]):
+        assert interaction.message is not None
+        selected_embed = self.get_embed(select.values[0])
+        if selected_embed:
+            await interaction.response.defer()
+            await interaction.message.edit(
+                embed=selected_embed,
+                view=EmbedEditor(self, embed=selected_embed, author=interaction.user),
+            )
+
+    @button()
+    async def _send_button(self, interaction: Interaction, button: Button[Self]):
         ...
 
     @button()
-    async def send_button(self, interactio: Interaction, _: Button[V]):
-        ...
+    async def _add_embed_button(
+        self, interaction: Interaction, button: Button[EmbedCreator]
+    ):
+        if self.total_embed == 10:
+            return await interaction.response.send_message(
+                self.config.messages.max_embed_error, ephemeral=True
+            )
+        self.add_embed(Embed())
+        await interaction.response.defer()
+        await self.refresh_creator(interaction)
+
+
+class EmbedEditor(View):
+    def __init__(
+        self,
+        embed_creator: EmbedCreator,
+        embed: Embed,
+        *,
+        timeout: float | None = 180,
+        auto_delete: bool = False,
+        auto_disable: bool = False,
+        author: User | Member | None = None,
+        button_disable_style: ButtonStyle = ButtonStyle.gray,
+    ):
+        super().__init__(
+            timeout=timeout,
+            auto_delete=auto_delete,
+            auto_disable=auto_disable,
+            author=author,
+            button_disable_style=button_disable_style,
+        )
+        self.embed_creator = embed_creator
+        self._saved: bool = False
+        self._update_maker()
+        self.callbacks: dict[str, Callable[[Interaction], Coroutine[Any, Any, Any]]] = {
+            "author": self.edit_author
+        }
+        self.embed = embed
+
+    def _update_maker(self) -> None:
+        self._save_button.label = self.embed_creator.config.maker.save_button_label
+        self._save_button.style = self.embed_creator.config.maker.save_button_style
+        self._save_button.emoji = self.embed_creator.config.maker.save_button_emoji
+
+        self._back_button.label = self.embed_creator.config.maker.back_button_label
+        self._back_button.style = (
+            self.embed_creator.config.maker.back_button_style
+            if self._saved
+            else ButtonStyle.danger
+        )
+        self._back_button.emoji = self.embed_creator.config.maker.back_button_emoji
+
+        self._embed_edit_menu.placeholder = self.embed_creator.config.maker.placeholder
+        self._embed_edit_menu.options = [
+            SelectOption(**i)
+            for i in self.embed_creator.config.maker.options.get_list()
+        ]
+
+    async def refresh_maker(self, interaction: Interaction, refresh: bool = False):
+        assert interaction.message is not None
+        if refresh:
+            self._update_maker()
+        await interaction.message.edit(embed=self.embed, view=self)
+
+    @select()
+    async def _embed_edit_menu(self, interaction: Interaction, select: Select[Any]):
+        await self.callbacks[select.values[0]](interaction)
+        self._saved = False
 
     @button()
-    async def cancel_button(self, interactio: Interaction, _: Button[V]):
-        ...
+    async def _save_button(self, interaction: Interaction, button: Button[Self]):
+        for emb_no, emb in enumerate(self.embed_creator.embeds):
+            if emb.name == self.embed.name:
+                self.embed_creator.embeds[emb_no] = self.embed
+                break
+        await interaction.response.defer()
+        self._saved = True
+        await self.refresh_maker(interaction, True)
+
+    @button()
+    async def _back_button(self, interaction: Interaction, button: Button[Self]):
+        assert interaction.message is not None
+        await interaction.response.defer()
+        await interaction.message.edit(
+            embeds=self.embed_creator.embeds, view=self.embed_creator
+        )
 
     async def edit_author(self, interaction: Interaction) -> None:
-        # Implement the edit_author functionality here
+        # Implement the edit_message functionality here
         pass
 
     async def edit_message(self, interaction: Interaction) -> None:
