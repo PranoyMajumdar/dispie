@@ -1,7 +1,7 @@
 from typing import Any, List, Optional, Mapping
 from discord.ext import commands
 from discord.ext.commands import Cog, Command, Group
-from discord import Embed, Color, utils
+from discord import Embed, colour, utils
 from dispie import Paginator
 
 __all__ = ("MinimalHelpCommand",)
@@ -18,7 +18,7 @@ class MinimalHelpCommand(commands.HelpCommand):
     ) -> None:
         embed = Embed(
             title=f"{self.context.bot.user.name}'s help",
-            color=self.options.get("color") or Color.blurple(),
+            colour=self.options.get("colour") or colour.blurple(),
         )
         embed.description = (
             self.options.get("description")
@@ -66,7 +66,7 @@ class MinimalHelpCommand(commands.HelpCommand):
                 embed = Embed(
                     title=f"{cog.qualified_name.capitalize()} commands",
                     description=cog.__doc__ or None,
-                    color=self.options.get("color") or Color.blurple(),
+                    colour=self.options.get("colour") or colour.blurple(),
                 )
                 embed.set_footer(text=f"(*) has subcommands")
                 embed.set_thumbnail(url=self.context.bot.user.display_avatar.url)
@@ -106,7 +106,7 @@ class MinimalHelpCommand(commands.HelpCommand):
                 embed = Embed(
                     title=f"{group.qualified_name.capitalize()} commands",
                     description=group.description or None,
-                    color=self.options.get("color") or Color.blurple(),
+                    colour=self.options.get("colour") or colour.blurple(),
                 )
                 embed.set_footer(text=f"(*) has subcommands")
                 embed.set_thumbnail(url=self.context.bot.user.display_avatar.url)
@@ -124,7 +124,7 @@ class MinimalHelpCommand(commands.HelpCommand):
     async def send_command_help(self, command: Command) -> None:
         embed = Embed(
             title=f"{command.qualified_name.capitalize()} help",
-            color=self.options.get("color") or Color.blurple(),
+            colour=self.options.get("colour") or colour.blurple(),
         )
         embed.description = f'> {command.description or "No description"}'
         embed.add_field(

@@ -21,7 +21,7 @@ class CreatorMethods:
             "thumbnail": self.edit_thumbnail,
             "image": self.edit_image,
             "footer": self.edit_footer,
-            "color": self.edit_colour,
+            "colour": self.edit_colour,
             "addfield": self.add_field,
             "removefield": self.remove_field,
         }
@@ -168,7 +168,7 @@ class CreatorMethods:
                 "Please provide a valid hex code.", ephemeral=True
             )
         else:
-            self.embed.color = colour
+            self.embed.colour = colour
 
     async def add_field(self, interaction: Interaction) -> None:
         if len(self.embed.fields) >= 25:

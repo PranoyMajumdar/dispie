@@ -92,12 +92,12 @@ class EmbedCreator(View):
                 "value": "footer",
             },
             {
-                "label": kwargs.get("color_label", "Edit Color"),
+                "label": kwargs.get("colour_label", "Edit colour"),
                 "description": kwargs.get(
-                    "color_description", "Edits the embed colour."
+                    "colour_description", "Edits the embed colour."
                 ),
-                "emoji": kwargs.get("color_emoji", "🔸"),
-                "value": "color",
+                "emoji": kwargs.get("colour_emoji", "🔸"),
+                "value": "colour",
             },
             {
                 "label": kwargs.get("addfield_label", "Add Field"),
@@ -147,7 +147,7 @@ class EmbedCreator(View):
     def get_default_embed(self) -> Embed:
         """
         This class method `get_default_embed` returns a pre-configured `discord.Embed` object with
-        title, description, color, author, thumbnail, image and footer set to specific values.
+        title, description, colour, author, thumbnail, image and footer set to specific values.
         It can be used as a default template for creating the embed builder.
 
         Returns:

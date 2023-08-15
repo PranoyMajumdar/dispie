@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Coroutine, Callable, Self
 
 
-from discord import ButtonStyle, SelectOption, TextStyle
+from discord import ButtonStyle, Colour, SelectOption, TextStyle
 from discord.ui import button, select, TextInput
 from discord.ext import commands
 from dispie import View
@@ -135,25 +135,22 @@ class EmbedEditor(View):
             button_disable_style=button_disable_style,
         )
         self.embed_creator = embed_creator
+        self.config = embed_creator.config
         self._update_maker()
         self.callbacks: dict[str, Callable[[Interaction], Coroutine[Any, Any, Any]]] = {
-            "author": self.edit_author,
-            "message": self.edit_message
+            "body": self.edit_body,
         }
         self.embed = embed
-    
 
     def _update_maker(self) -> None:
+        self._back_button.label = self.config.maker.back_button_label
+        self._back_button.style = self.config.maker.back_button_style
 
-        self._back_button.label = self.embed_creator.config.maker.back_button_label
-        self._back_button.style = self.embed_creator.config.maker.back_button_style
-           
-        self._back_button.emoji = self.embed_creator.config.maker.back_button_emoji
+        self._back_button.emoji = self.config.maker.back_button_emoji
 
-        self._embed_edit_menu.placeholder = self.embed_creator.config.maker.placeholder
+        self._embed_edit_menu.placeholder = self.config.maker.placeholder
         self._embed_edit_menu.options = [
-            SelectOption(**i)
-            for i in self.embed_creator.config.maker.options.get_list()
+            SelectOption(**i) for i in self.config.maker.options.get_list()
         ]
 
     async def refresh_maker(self, interaction: Interaction):
@@ -170,20 +167,67 @@ class EmbedEditor(View):
             embeds=self.embed_creator.embeds, view=self.embed_creator
         )
 
+    async def edit_body(self, interaction: Interaction) -> Any:
+        prompt = ModalPrompt(title=self.config.maker.modal.body_title)
+        title = prompt.add_input(
+            TextInput(
+                label=self.config.maker.modal.body_title_label,
+                default=self.embed.title,
+                required=False,
+                placeholder=self.config.maker.modal.body_title_placeholder,
+            )
+        )
+        description = prompt.add_input(
+            TextInput(
+                label=self.config.maker.modal.body_description_label,
+                default=self.embed.description,
+                required=False,
+                style=TextStyle.long,
+                placeholder=self.config.maker.modal.body_description_placeholder,
+            )
+        )
+
+        colour = prompt.add_input(
+            TextInput(
+                label=self.config.maker.modal.body_colour_label,
+                required=False,
+                placeholder=self.config.maker.modal.body_colour_placeholder,
+                default=str(self.embed.colour),
+            )
+        )
+
+        await interaction.response.send_modal(prompt)
+        await prompt.wait()
+
+        try:
+            colour_obj = Colour.from_str(str(colour))
+        except ValueError:
+            return await interaction.followup.send(
+                self.config.messages.colour_convert_error, ephemeral=True
+            )
+        else:
+            self.embed.title = str(title)
+            self.embed.description = str(description)
+            self.embed.colour = colour_obj
+        finally:
+            await self.refresh_maker(interaction)
+
     async def edit_author(self, interaction: Interaction) -> None:
-        prompt = ModalPrompt(title=self.embed_creator.config.maker.modal.author_title)
+        prompt = ModalPrompt(title=self.config.maker.modal.author_title)
         name = prompt.add_input(
             TextInput(
-                label=self.embed_creator.config.maker.modal.author_name_label,
+                label=self.config.maker.modal.author_name_label,
                 default=self.embed.author.name,
-                required=False
+                required=False,
+                placeholder=self.config.maker.modal.author_name_placeholder,
             )
         )
         url = prompt.add_input(
             TextInput(
-                label=self.embed_creator.config.maker.modal.author_url_label,
+                label=self.config.maker.modal.author_url_label,
                 default=self.embed.author.url,
-                required=False
+                required=False,
+                placeholder=self.config.maker.modal.author_url_placeholder,
             )
         )
         await interaction.response.send_modal(prompt)
@@ -192,20 +236,22 @@ class EmbedEditor(View):
         await self.refresh_maker(interaction)
 
     async def edit_message(self, interaction: Interaction) -> None:
-        prompt = ModalPrompt(title=self.embed_creator.config.maker.modal.message_title)
+        prompt = ModalPrompt(title=self.config.maker.modal.message_title)
         title = prompt.add_input(
             TextInput(
-                label=self.embed_creator.config.maker.modal.message_name_label,
+                label=self.config.maker.modal.message_name_label,
                 default=self.embed.title,
                 required=False,
+                placeholder=self.config.maker.modal.message_name_placeholder,
             )
         )
         description = prompt.add_input(
             TextInput(
-                label=self.embed_creator.config.maker.modal.message_description_label,
+                label=self.config.maker.modal.message_description_label,
                 default=self.embed.description,
                 required=False,
-                style=TextStyle.long
+                style=TextStyle.long,
+                placeholder=self.config.maker.modal.message_description_placeholder,
             )
         )
 
@@ -215,9 +261,30 @@ class EmbedEditor(View):
         self.embed.description = str(description)
         await self.refresh_maker(interaction)
 
-    async def edit_color(self, interaction: Interaction) -> None:
-        # Implement the edit_color functionality here
-        pass
+    async def edit_colour(self, interaction: Interaction) -> None:
+        prompt = ModalPrompt(title=self.config.maker.modal.colour_title)
+        colour = prompt.add_input(
+            TextInput(
+                label=self.config.maker.modal.colour_label,
+                required=False,
+                placeholder=self.config.maker.modal.colour_placeholder,
+            )
+        )
+
+        await interaction.response.send_modal(prompt)
+        await prompt.wait()
+        try:
+            colour_obj = Colour.from_str(str(colour))
+        except ValueError:
+            return await interaction.followup.send(
+                self.config.messages.colour_convert_error, ephemeral=True
+            )
+
+        else:
+            self.embed.colour = colour_obj
+
+        finally:
+            await self.refresh_maker(interaction)
 
     async def edit_footer(self, interaction: Interaction) -> None:
         # Implement the edit_footer functionality here

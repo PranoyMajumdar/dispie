@@ -15,17 +15,41 @@ EmojiType: TypeAlias = Union[str, Emoji, PartialEmoji, None]
 
 @dataclass(eq=False, slots=True, kw_only=True)
 class ModalData:
+
+    body_title: str = field(default="Edit Embed Body")
+    body_title_label: str = field(default="Embed Title")
+    body_title_placeholder: str = field(default="The title of the embed.")
+    body_description_label: str = field(default="Embed Description")
+    body_description_placeholder: str = field(default="The description of the embed.")
+    body_colour_label: str = field(default="Embed Colour")
+    body_colour_placeholder: str = field(default="The colour of the embed (example: #fff).")
+
+
     author_title: str = field(default="Edit Embed Author")
     author_name_label: str = field(default="Author Name")
+    author_name_placeholder: str = field(default="The name of the author.")
     author_url_label: str = field(default="Author Url")
+    author_url_placeholder: str = field(default="The url of the author.")
+
 
     message_title: str = field(default="Edit Embed Message")
-    message_name_label: str = field(default="Title")
+    message_name_label: str = field(default="Title")    
+    message_name_placeholder: str = field(default="The title of the embed.")
     message_description_label: str = field(default="Description")
+    message_description_placeholder: str = field(default="The description of the embed.")
+
+    colour_title: str = field(default="Edit Embed Colour")
+    colour_label: str = field(default="Colour")
+    colour_placeholder: str = field(default="Colour")
 
 
 @dataclass(eq=False, slots=True, kw_only=True)
 class SelectOptionData:
+
+    body_label: str = field(default="Edit Body")
+    body_description: str | None = field(default="Edits the embed title, description and colour.")
+    body_emoji: EmojiType = field(default="🔸")
+
     author_label: str = field(default="Edit Author")
     author_description: str | None = field(default="Edits the embed author name.")
     author_emoji: EmojiType = field(default="🔸")
@@ -36,9 +60,9 @@ class SelectOptionData:
     )
     message_emoji: EmojiType = field(default="🔸")
 
-    color_label: str = field(default="Edit Color")
-    color_description: str | None = field(default="Edits the embed color.")
-    color_emoji: EmojiType = field(default="🔸")
+    colour_label: str = field(default="Edit Colour")
+    colour_description: str | None = field(default="Edits the embed colour.")
+    colour_emoji: EmojiType = field(default="🔸")
 
     footer_label: str = field(default="Edit Footer")
     footer_description: str | None = field(default="Edits the embed footer text.")
@@ -71,6 +95,12 @@ class SelectOptionData:
     def get_list(self) -> list[dict[str, Any]]:
         return [
             {
+                "label": self.body_label,
+                "description": self.body_description,
+                "emoji": self.body_emoji,
+                "value": "body",
+            },
+            {
                 "label": self.author_label,
                 "description": self.author_description,
                 "emoji": self.author_emoji,
@@ -83,10 +113,10 @@ class SelectOptionData:
                 "value": "message",
             },
             {
-                "label": self.color_label,
-                "description": self.color_description,
-                "emoji": self.color_emoji,
-                "value": "color",
+                "label": self.colour_label,
+                "description": self.colour_description,
+                "emoji": self.colour_emoji,
+                "value": "colour",
             },
             {
                 "label": self.footer_label,
@@ -130,15 +160,12 @@ class SelectOptionData:
 @dataclass(eq=False, slots=True, kw_only=True)
 class EmbedCreatorMessages:
     max_embed_error: str = field(default="You cannot add more than 10 embeds.")
+    colour_convert_error: str = field(default="The string could not be converted into a colour.")
 
 
 
 @dataclass(eq=False, slots=True, kw_only=True)
 class EmbedMakerConfig:
-
-    save_button_label: str | None = field(default="Save")
-    save_button_style: ButtonStyle = field(default=ButtonStyle.blurple)
-    save_button_emoji: str | None = field(default=None)
 
     back_button_label: str | None = field(default="Back")
     back_button_style: ButtonStyle = field(default=ButtonStyle.blurple)
