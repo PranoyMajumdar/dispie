@@ -6,6 +6,7 @@ from contextlib import suppress
 
 if TYPE_CHECKING:
     from discord import User, Member, Interaction, Message, WebhookMessage
+    from typing_extensions import Self
 
 
 __all__ = ("View",)
@@ -64,19 +65,25 @@ class View(ui.View):
         self.auto_delete = auto_delete
         self.auto_disable = auto_disable
 
+    def disable_all_items(self, *excludes: ui.Item[Self]) -> None:
+        for item in self.children:
+            if item in excludes:
+                continue
+            
+            if isinstance(item, ui.Select):
+                item.disabled = True
+            
+            if isinstance(item, ui.Button):
+                item.style = self.button_disable_style
+                item.disabled = True
+        
+
     async def interaction_check(self, interaction: Interaction, /) -> bool:
         return False if self.author is None else self.author.id == interaction.user.id
 
     async def on_timeout(self) -> Any:
         if self.message is not None and (self.auto_delete or self.auto_disable):
-            for child in self.children:
-                if isinstance(child, ui.Select):
-                    child.disabled = True
-
-                if isinstance(child, ui.Button):
-                    child.style = self.button_disable_style
-                    child.disabled = True
-
+            self.disable_all_items()
             with suppress(NotFound, HTTPException, Forbidden):
                 if self.auto_delete:
                     self.stop()

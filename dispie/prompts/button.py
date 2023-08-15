@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Any, Optional
 from dispie import View
 from discord import ButtonStyle
 from discord.ui import button
+from contextlib import suppress
 
 if TYPE_CHECKING:
     from discord import User, Member, Interaction
@@ -53,6 +54,7 @@ class ButtonPrompt(View):
         button_disable_style: ButtonStyle = ButtonStyle.gray,
         auto_delete: bool = False,
         auto_disable: bool = False,
+        ephemeral: bool = False,
         **data: Any,
     ):
         super().__init__(
@@ -65,6 +67,7 @@ class ButtonPrompt(View):
 
         self.value: bool | None = None
         self.init_buttons(data)
+        self.ephemeral = ephemeral
 
     def init_buttons(self, data: dict[str, Any]) -> None:
         """Initialize the button data such as label, style, and emoji.
@@ -78,13 +81,10 @@ class ButtonPrompt(View):
         button_data = {"true": self.true_button, "false": self.false_button}
 
         for button_type, button_obj in button_data.items():
-            label_key = f"{button_type}_button_label"
-            style_key = f"{button_type}_button_style"
-            emoji_key = f"{button_type}_button_emoji"
-
-            label_value = data.get(label_key)
-            style_value = data.get(style_key)
-            emoji_value = data.get(emoji_key)
+            label_value = data.get(f"{button_type}_button_label")
+            style_value = data.get(f"{button_type}_button_style")
+            emoji_value = data.get(f"{button_type}_button_emoji")
+            row_value = data.get(f"{button_type}_button_row")
 
             if label_value is not None:
                 button_obj.label = label_value
@@ -95,16 +95,30 @@ class ButtonPrompt(View):
             if emoji_value is not None:
                 button_obj.emoji = emoji_value
 
+            if row_value is not None:
+                button_obj.row = row_value
+
+
     @button(label="Yes", style=ButtonStyle.green)
     async def true_button(self, interaction: Interaction, button: Button[Self]):
         self.value = True
         self.stop()
+        await interaction.response.defer()
         if interaction.message is not None:
-            return await interaction.message.delete()
+            with suppress(Exception):
+                if not self.ephemeral:
+                    return await interaction.message.delete()
+                self.disable_all_items()
+                return await interaction.edit_original_response(view=self)
 
     @button(label="No", style=ButtonStyle.red)
     async def false_button(self, interaction: Interaction, button: Button[Self]):
         self.value = False
         self.stop()
+        await interaction.response.defer()
         if interaction.message is not None:
-            return await interaction.message.delete()
+            with suppress(Exception):
+                if not self.ephemeral:
+                    return await interaction.message.delete()
+                self.disable_all_items()
+                return await interaction.edit_original_response(view=self)

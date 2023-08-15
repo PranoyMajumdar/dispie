@@ -19,6 +19,10 @@ class ModalData:
     author_name_label: str = field(default="Author Name")
     author_url_label: str = field(default="Author Url")
 
+    message_title: str = field(default="Edit Embed Message")
+    message_name_label: str = field(default="Title")
+    message_description_label: str = field(default="Description")
+
 
 @dataclass(eq=False, slots=True, kw_only=True)
 class SelectOptionData:
