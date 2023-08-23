@@ -98,7 +98,6 @@ class ButtonPrompt(View):
             if row_value is not None:
                 button_obj.row = row_value
 
-
     @button(label="Yes", style=ButtonStyle.green)
     async def true_button(self, interaction: Interaction, button: Button[Self]):
         self.value = True

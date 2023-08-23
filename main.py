@@ -131,7 +131,5 @@ async def mop(interaction: discord.Interaction):
 
 @bot.command()
 async def c(ctx: commands.Context[Any]):
-    await EmbedCreator(author=ctx.author).send(ctx)
+    await EmbedCreator(author=ctx.author).start(ctx)
 
-
-bot.run("MTA5MjM3NDk5MjA3Njk0NzUwOA.GdD5NQ.llkVbk1Cdn93GRVlcadgW-T46ZtmbpM6RfrEQ4")
