@@ -1,2 +1,2 @@
 from .creator import *
-from .embed import *
+from .config import *
