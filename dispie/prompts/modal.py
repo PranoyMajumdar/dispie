@@ -42,7 +42,7 @@ class ModalPrompt(Modal):
     ) -> None:
         super().__init__(title=title, timeout=timeout, custom_id=custom_id)
 
-    def add_input(self, item: TextInput[Self]):
+    def add_input(self, item: TextInput[Self]) -> TextInput[Self]:
         self.add_item(item)
         return item
 

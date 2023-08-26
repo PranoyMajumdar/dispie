@@ -38,7 +38,9 @@ class EmbedCreator(View):
             button_disable_style=button_disable_style,
         )
         self.config = config
-        self.embed = embed or Embed(description="Edit this embed.")
+        self.embed = embed or Embed(description="Edit this embed.").add_field(
+            name="1", value="1"
+        ).add_field(name="2", value="2").add_field(name="3", value="3")
         self._update_options()
         self.edit_callbacks: dict[
             str, Callable[[Interaction], Coroutine[Any, Any, Any]]
@@ -46,9 +48,11 @@ class EmbedCreator(View):
             "content": self.edit_content,
             "body": self.edit_body,
             "images": self.edit_images,
+            "misc": self.edit_misc,
             "add_field": self.add_field,
             "remove_field": self.remove_field,
-            "misc": self.edit_misc,
+            "rearrange_fields": self.rearrange_fields,
+            "edit_field": self.edit_field,
         }
         self.action_callbacks: dict[
             str, Callable[[Interaction], Coroutine[Any, Any, Any]]
@@ -58,7 +62,7 @@ class EmbedCreator(View):
     def _update_options(self) -> None:
         self._set_select_options(
             self._embed_edit_select,
-            self.config.edit_options.get_list(),
+            self.config.edit_options.get_list(self.embed),
             self.config.edit_select_placeholder,
         )
 
@@ -94,6 +98,7 @@ class EmbedCreator(View):
 
     async def refresh_creator(self, interaction: Interaction) -> Any:
         assert interaction.message is not None
+        self._update_options()
         await interaction.message.edit(
             content=self.content, embed=self.embed, view=self
         )
@@ -131,7 +136,7 @@ class EmbedCreator(View):
             modal.add_input(
                 ui.TextInput(
                     **self.config.modals.body_color_field.get_kwargs(
-                        str(self.embed.color)
+                        str(self.embed.color) if self.embed.color is not None else None
                     )
                 )
             ),
@@ -141,16 +146,16 @@ class EmbedCreator(View):
         await modal.wait()
         self.embed.title = str(title)
         self.embed.description = str(description)
+        if (color := str(color)) != "":
+            try:
+                color = Color.from_str(color)
+            except ValueError:
+                await interaction.followup.send(
+                    content=self.config.messages.color_convert_error, ephemeral=True
+                )
 
-        try:
-            color = Color.from_str(str(color))
-        except ValueError:
-            await interaction.followup.send(
-                content=self.config.messages.color_convert_error, ephemeral=True
-            )
-
-        else:
-            self.embed.color = color
+            else:
+                self.embed.color = color
 
         return await self.refresh_creator(interaction)
 
@@ -241,17 +246,23 @@ class EmbedCreator(View):
         self.embed.remove_field(int(select.values[0]))
         return await self.refresh_creator(interaction)
 
-    async def move_field(self, interaction: Interaction) -> Any:
+
+
+        
+
+    async def edit_field(self, interaction: Interaction) -> Any:
         ...
 
     @ui.select()
     async def _embed_edit_select(
         self, interaction: Interaction, select: ui.Select[Any]
     ) -> Any:
+        await self.refresh_creator(interaction)
         return await self.edit_callbacks[select.values[0]](interaction)
 
     @ui.select()
     async def _embed_actions_select(
         self, interaction: Interaction, select: ui.Select[Any]
     ) -> Any:
+        await self.refresh_creator(interaction)
         return await self.action_callbacks[select.values[0]](interaction)

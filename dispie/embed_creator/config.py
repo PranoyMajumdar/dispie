@@ -3,6 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 from dataclasses import dataclass, field
 
+from discord import Embed
+
 
 if TYPE_CHECKING:
     from discord import PartialEmoji, Emoji
@@ -14,7 +16,7 @@ __all__ = (
     "Option",
     "ModalField",
     "Modals",
-    "Messages"
+    "Messages",
 )
 
 
@@ -33,11 +35,13 @@ class EditOptions:
     misc: Option = field(default_factory=lambda: Option(label="Misc"))
     add_field: Option = field(default_factory=lambda: Option(label="Add Field"))
     remove_field: Option = field(default_factory=lambda: Option(label="Remove Field"))
-    move_field: Option = field(default_factory=lambda: Option(label="Move Field"))
+    edit_field: Option = field(default_factory=lambda: Option(label="Edit Field"))
+    rearrange_field: Option = field(
+        default_factory=lambda: Option(label="Rearrange Fields")
+    )
 
-
-    def get_list(self) -> list[dict[str, Any]]:
-        return [
+    def get_list(self, embed: Embed) -> list[dict[str, Any]]:
+        base = [
             {
                 "label": self.content.label,
                 "description": self.content.description,
@@ -62,25 +66,43 @@ class EditOptions:
                 "emoji": self.misc.emoji,
                 "value": "misc",
             },
-            {
-                "label": self.add_field.label,
-                "description": self.add_field.description,
-                "emoji": self.add_field.emoji,
-                "value": "add_field",
-            },
-            {
-                "label": self.remove_field.label,
-                "description": self.remove_field.description,
-                "emoji": self.remove_field.emoji,
-                "value": "remove_field",
-            },
-            {
-                "label": self.move_field.label,
-                "description": self.move_field.description,
-                "emoji": self.move_field.emoji,
-                "value": "move_field",
-            },
         ]
+        if len(embed.fields) <= 25:
+            base.append(
+                {
+                    "label": self.add_field.label,
+                    "description": self.add_field.description,
+                    "emoji": self.add_field.emoji,
+                    "value": "add_field",
+                }
+            )
+        if len(embed.fields) > 0:
+            base.append(
+                {
+                    "label": self.remove_field.label,
+                    "description": self.remove_field.description,
+                    "emoji": self.remove_field.emoji,
+                    "value": "remove_field",
+                }
+            )
+            base.append(
+                {
+                    "label": self.edit_field.label,
+                    "description": self.edit_field.description,
+                    "emoji": self.edit_field.emoji,
+                    "value": "edit_field",
+                },
+            )
+        if len(embed.fields) > 1:
+            base.append(
+                {
+                    "label": self.rearrange_field.label,
+                    "description": self.rearrange_field.description,
+                    "emoji": self.rearrange_field.emoji,
+                    "value": "rearrange_fields",
+                },
+            )
+        return base
 
 
 @dataclass(kw_only=True, slots=True, eq=True)
@@ -130,7 +152,7 @@ class ModalField:
             "label": self.label,
             "placeholder": self.placeholder,
             "default": self.default or default,
-            "required": False
+            "required": False,
         }
 
 
@@ -213,9 +235,13 @@ class Modals:
             label="Footer Icon Url", placeholder="The icon url of the embed footer."
         )
     )
+
+
 @dataclass(kw_only=True, slots=True, eq=True)
 class Messages:
-    color_convert_error: str = field(default="The string could not be converted into a colour.")
+    color_convert_error: str = field(
+        default="The string could not be converted into a colour."
+    )
 
 
 @dataclass(kw_only=True, slots=True, eq=True)
@@ -223,6 +249,8 @@ class Prompts:
     remove_field_content: str = field(default="Select a field to remove!")
     remove_field_description: str | None = field(default=None)
     remove_field_emoji: str | Emoji | PartialEmoji | None = field(default=None)
+
+
 @dataclass(kw_only=True, slots=True, eq=True)
 class BaseConfig:
     edit_options: EditOptions = field(default_factory=EditOptions)
