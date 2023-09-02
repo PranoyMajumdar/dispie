@@ -7,6 +7,7 @@ from discord import Embed, ButtonStyle, SelectOption, ui
 from discord.ext import commands
 
 from .methods import CreatorMethods
+from .config import BaseConfig
 
 if TYPE_CHECKING:
     from typing_extensions import Self
@@ -14,47 +15,6 @@ if TYPE_CHECKING:
     from discord.ui.item import V
 
 __all__: Sequence[str] = ("EmbedCreator",)
-
-
-select_section_options: list[SelectOption] = [
-    SelectOption(
-        label="Edit Content",
-        description="Edits the embed content",
-        value="edit_content",
-    ),
-    SelectOption(
-        label="Edit Author", description="Edits the embed author.", value="edit_author"
-    ),
-    SelectOption(
-        label="Edit Body",
-        description="Edits the embed body (title, description, url, color)",
-        value="edit_body",
-    ),
-    SelectOption(
-        label="Edit Images",
-        description="Edits the embed images (image, video, thumbnail)",
-        value="edit_images",
-    ),
-    SelectOption(
-        label="Edit Footer", description="Edits the embed footer.", value="edit_footer"
-    ),
-]
-
-select_fields_options: list[SelectOption] = [
-    SelectOption(
-        label="Add Field",
-        description="Add a new field to the embed.",
-        value="add_field",
-    ),
-    SelectOption(
-        label="Remove Field",
-        description="Remove a field from the embed.",
-        value="remove_field",
-    ),
-    SelectOption(
-        label="Edit Field", description="Edit a embed field.", value="edit_field"
-    ),
-]
 
 
 class EmbedCreator(View):
@@ -66,6 +26,7 @@ class EmbedCreator(View):
         auto_disable: bool = False,
         author: User | Member | None = None,
         button_disable_style: ButtonStyle = ButtonStyle.gray,
+        config: BaseConfig | None = None,
     ):
         super().__init__(
             timeout=timeout,
@@ -78,18 +39,13 @@ class EmbedCreator(View):
         self.buttons: list[ui.Button[Self]] = list()
         self.methods: CreatorMethods = CreatorMethods(self)
         self.content: str | None = None
+        self.config = config or BaseConfig()
         for i in range(5):
             self.embed.add_field(name=f"Field {i}", value=f"Field value {i}")
 
     def update_selects(self) -> Self:
-        self.update_select(
-            self._edit_embed_select,
-            [SelectOption(label="Edit Section", default=True)] + select_section_options,
-        )
-        self.update_select(
-            self._edit_embed_fields_select,
-            [SelectOption(label="Edit Fields", default=True)] + select_fields_options,
-        )
+        self.update_select(self._edit_embed_select, self.config.selects.embed_sections.options())
+        self.update_select(self._edit_embed_fields_select, self.config.selects.embed_fields_sections.options())
 
         return self
 
@@ -100,7 +56,7 @@ class EmbedCreator(View):
     async def refresh_creator(self, interaction: Interaction) -> Self:
         assert (
             interaction.message
-        )  # We know that message components always have a message attribute
+        )  # We know that message components always have a message
         await interaction.message.edit(
             content=self.content, embed=self.embed, view=self
         )
@@ -152,7 +108,7 @@ class EmbedCreator(View):
         view = View()
         for i in self.buttons:
             view.add_item(i)
-        
+
         if prompt.channels is not None:
             channel = await prompt.channels[0].fetch()
             if isinstance(channel, (TextChannel)):

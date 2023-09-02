@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Any, Callable, Coroutine, Sequence
+from typing import TYPE_CHECKING, Any, Sequence
 
 from dispie.prompts import ModalPrompt
 from discord import Color, ui
@@ -15,9 +15,9 @@ __all__: Sequence[str] = ("CreatorMethods",)
 class CreatorMethods:
     def __init__(self, creator: EmbedCreator) -> None:
         self.creator = creator
-        self.callbacks: dict[str, Callable[[Interaction], Coroutine[Any, Any, Any]]]
+        self.config = creator.config
 
-    async def edit_content(self, interaction: Interaction) -> Any:
+    async def edit_message(self, interaction: Interaction) -> Any:
         modal = ModalPrompt(title="Edit Embed Message")
         content = modal.add_input(ui.TextInput(label="Content"))
         await interaction.response.send_modal(modal)
