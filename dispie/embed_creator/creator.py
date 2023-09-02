@@ -1,34 +1,71 @@
 from __future__ import annotations
-
-from typing import TYPE_CHECKING, Any, Callable, Coroutine
-
-from discord.utils import MISSING
+from typing import TYPE_CHECKING, Any, Self, Sequence
 
 from dispie import View
-from dispie.prompts import ModalPrompt, TextSelectPrompt
-from discord import ButtonStyle, Color, Embed, SelectOption, ui
+from dispie.prompts import ChannelSelectPrompt
+from discord import Embed, ButtonStyle, SelectOption, ui
 from discord.ext import commands
-from .config import BaseConfig
+
+from .methods import CreatorMethods
 
 if TYPE_CHECKING:
-    from discord import User, Member, Interaction, WebhookMessage, Message
     from typing_extensions import Self
+    from discord import User, Member, Interaction, TextChannel
+    from discord.ui.item import V
+
+__all__: Sequence[str] = ("EmbedCreator",)
 
 
-__all__ = ("EmbedCreator",)
+select_section_options: list[SelectOption] = [
+    SelectOption(
+        label="Edit Content",
+        description="Edits the embed content",
+        value="edit_content",
+    ),
+    SelectOption(
+        label="Edit Author", description="Edits the embed author.", value="edit_author"
+    ),
+    SelectOption(
+        label="Edit Body",
+        description="Edits the embed body (title, description, url, color)",
+        value="edit_body",
+    ),
+    SelectOption(
+        label="Edit Images",
+        description="Edits the embed images (image, video, thumbnail)",
+        value="edit_images",
+    ),
+    SelectOption(
+        label="Edit Footer", description="Edits the embed footer.", value="edit_footer"
+    ),
+]
+
+select_fields_options: list[SelectOption] = [
+    SelectOption(
+        label="Add Field",
+        description="Add a new field to the embed.",
+        value="add_field",
+    ),
+    SelectOption(
+        label="Remove Field",
+        description="Remove a field from the embed.",
+        value="remove_field",
+    ),
+    SelectOption(
+        label="Edit Field", description="Edit a embed field.", value="edit_field"
+    ),
+]
 
 
 class EmbedCreator(View):
     def __init__(
         self,
         *,
-        timeout: float | None = 180,
+        timeout: float | None = None,
         auto_delete: bool = False,
         auto_disable: bool = False,
         author: User | Member | None = None,
         button_disable_style: ButtonStyle = ButtonStyle.gray,
-        config: BaseConfig = BaseConfig(),
-        embed: Embed | None = None,
     ):
         super().__init__(
             timeout=timeout,
@@ -37,232 +74,102 @@ class EmbedCreator(View):
             author=author,
             button_disable_style=button_disable_style,
         )
-        self.config = config
-        self.embed = embed or Embed(description="Edit this embed.").add_field(
-            name="1", value="1"
-        ).add_field(name="2", value="2").add_field(name="3", value="3")
-        self._update_options()
-        self.edit_callbacks: dict[
-            str, Callable[[Interaction], Coroutine[Any, Any, Any]]
-        ] = {
-            "content": self.edit_content,
-            "body": self.edit_body,
-            "images": self.edit_images,
-            "misc": self.edit_misc,
-            "add_field": self.add_field,
-            "remove_field": self.remove_field,
-            "rearrange_fields": self.rearrange_fields,
-            "edit_field": self.edit_field,
-        }
-        self.action_callbacks: dict[
-            str, Callable[[Interaction], Coroutine[Any, Any, Any]]
-        ] = {}
-        self.content: str | None = MISSING
+        self.embed: Embed = Embed(title="Embed", description="Embed Description")
+        self.buttons: list[ui.Button[Self]] = list()
+        self.methods: CreatorMethods = CreatorMethods(self)
+        self.content: str | None = None
+        for i in range(5):
+            self.embed.add_field(name=f"Field {i}", value=f"Field value {i}")
 
-    def _update_options(self) -> None:
-        self._set_select_options(
-            self._embed_edit_select,
-            self.config.edit_options.get_list(self.embed),
-            self.config.edit_select_placeholder,
+    def update_selects(self) -> Self:
+        self.update_select(
+            self._edit_embed_select,
+            [SelectOption(label="Edit Section", default=True)] + select_section_options,
+        )
+        self.update_select(
+            self._edit_embed_fields_select,
+            [SelectOption(label="Edit Fields", default=True)] + select_fields_options,
         )
 
-        self._set_select_options(
-            self._embed_actions_select,
-            self.config.action_options.get_list(),
-            self.config.action_select_placeholder,
-        )
-
-    def _set_select_options(
-        self, select: ui.Select[Any], options: list[dict[str, Any]], placeholder: str
-    ) -> None:
-        select.placeholder = placeholder
-        select.options = [SelectOption(**x) for x in options]
-
-    async def start(
-        self,
-        ctx: commands.Context[Any] | Interaction,
-        content: str = "Interact with the menus to edit the embed.",
-    ) -> Self:
-        self.message = await self._send_message(ctx, content)
         return self
 
-    async def _send_message(
-        self, ctx: commands.Context[Any] | Interaction, content: str
-    ) -> Message | WebhookMessage | None:
-        if isinstance(ctx, commands.Context):
-            return await ctx.send(content=content, embed=self.embed, view=self)
+    def update_select(self, select: ui.Select[V], options: list[SelectOption]) -> Self:
+        select.options = options
+        return self
 
-        if not ctx.response.is_done():
-            await ctx.response.defer()
-        return await ctx.followup.send(content=content, embed=self.embed, view=self)
-
-    async def refresh_creator(self, interaction: Interaction) -> Any:
-        assert interaction.message is not None
-        self._update_options()
+    async def refresh_creator(self, interaction: Interaction) -> Self:
+        assert (
+            interaction.message
+        )  # We know that message components always have a message attribute
         await interaction.message.edit(
             content=self.content, embed=self.embed, view=self
         )
+        return self
 
-    async def edit_content(self, interaction: Interaction) -> Any:
-        assert interaction.message is not None
-        modal = ModalPrompt(title=self.config.modals.content_title)
-        content = modal.add_input(
-            ui.TextInput(
-                **self.config.modals.content_field.get_kwargs(
-                    interaction.message.content
-                )
-            )
-        )
-        await interaction.response.send_modal(modal)
-        await modal.wait()
-        self.content = str(content)
-        await self.refresh_creator(interaction)
+    async def start(self, ctx: Interaction | commands.Context[Any]) -> Self:
+        self.update_selects()
+        if isinstance(ctx, commands.Context):
+            self.message = await ctx.send(embed=self.embed, view=self)
+        else:
+            if not ctx.response.is_done():
+                await ctx.response.defer()
 
-    async def edit_body(self, interaction: Interaction) -> Any:
-        modal = ModalPrompt(title=self.config.modals.body_title)
-        title, description, color = (
-            modal.add_input(
-                ui.TextInput(
-                    **self.config.modals.body_title_field.get_kwargs(self.embed.title)
-                )
-            ),
-            modal.add_input(
-                ui.TextInput(
-                    **self.config.modals.body_description_field.get_kwargs(
-                        self.embed.description
-                    )
-                )
-            ),
-            modal.add_input(
-                ui.TextInput(
-                    **self.config.modals.body_color_field.get_kwargs(
-                        str(self.embed.color) if self.embed.color is not None else None
-                    )
-                )
-            ),
-        )
+            self.message = await ctx.followup.send(embed=self.embed, view=self)
 
-        await interaction.response.send_modal(modal)
-        await modal.wait()
-        self.embed.title = str(title)
-        self.embed.description = str(description)
-        if (color := str(color)) != "":
-            try:
-                color = Color.from_str(color)
-            except ValueError:
-                await interaction.followup.send(
-                    content=self.config.messages.color_convert_error, ephemeral=True
-                )
+        return self
 
-            else:
-                self.embed.color = color
+    @ui.select()
+    async def _edit_embed_select(
+        self, interaction: Interaction, select: ui.Select[V]
+    ) -> Any:
+        if (callback := getattr(self.methods, select.values[0], None)) is not None:
+            await self.refresh_creator(interaction)
+            return await callback(interaction)
 
-        return await self.refresh_creator(interaction)
+        else:
+            await interaction.response.send_message("Not Implimented", ephemeral=True)
 
-    async def edit_images(self, interaction: Interaction) -> Any:
-        ...
+    @ui.select()
+    async def _edit_embed_fields_select(
+        self, interaction: Interaction, select: ui.Select[V]
+    ) -> Any:
+        if (callback := getattr(self.methods, select.values[0], None)) is not None:
+            return await callback(interaction)
 
-    async def edit_misc(self, interaction: Interaction) -> Any:
-        modal = ModalPrompt(title=self.config.modals.misc_title)
-        author_name, author_icon = modal.add_input(
-            ui.TextInput(
-                **self.config.modals.misc_author_name_field.get_kwargs(
-                    self.embed.author.name
-                )
-            )
-        ), modal.add_input(
-            ui.TextInput(
-                **self.config.modals.misc_author_icon_field.get_kwargs(
-                    self.embed.author.icon_url
-                )
-            )
-        )
+        else:
+            await interaction.response.send_message("Not Implimented", ephemeral=True)
 
-        footer_text, footer_icon = modal.add_input(
-            ui.TextInput(
-                **self.config.modals.misc_footer_text_field.get_kwargs(
-                    self.embed.footer.text
-                )
-            )
-        ), modal.add_input(
-            ui.TextInput(
-                **self.config.modals.misc_footer_icon_field.get_kwargs(
-                    self.embed.footer.icon_url
-                )
-            )
-        )
-
-        await interaction.response.send_modal(modal)
-        await modal.wait()
-        self.embed.set_author(
-            name=str(author_name), icon_url=str(author_icon)
-        ).set_footer(text=str(footer_text), icon_url=str(footer_icon))
-
-        return await self.refresh_creator(interaction)
-
-    async def add_field(self, interaction: Interaction) -> Any:
-        modal = ModalPrompt(title=self.config.modals.add_field_title)
-        name, value, inline = (
-            modal.add_input(
-                ui.TextInput(**self.config.modals.add_field_name_field.get_kwargs())
-            ),
-            modal.add_input(
-                ui.TextInput(**self.config.modals.add_field_value_field.get_kwargs())
-            ),
-            modal.add_input(
-                ui.TextInput(**self.config.modals.add_field_inline_field.get_kwargs())
-            ),
-        )
-
-        await interaction.response.send_modal(modal)
-        await modal.wait()
-        inline_bool: bool = True if str(inline).lower() == "true" else False
-
-        self.embed.add_field(name=name, value=value, inline=inline_bool)
-        return await self.refresh_creator(interaction)
-
-    async def remove_field(self, interaction: Interaction) -> Any:
-        select = TextSelectPrompt(
+    @ui.button(label="Send")
+    async def _send_button(self, interaction: Interaction, _: ui.Button[Self]) -> Any:
+        prompt = ChannelSelectPrompt(
             interaction.user,
-            [
-                SelectOption(
-                    label=x.name if isinstance(x.name, str) else f"Field {no}",
-                    description=self.config.prompts.remove_field_description,
-                    emoji=self.config.prompts.remove_field_emoji,
-                    value=str(no),
-                )
-                for no, x in enumerate(self.embed.fields)
-            ],
             auto_delete=True,
-            timeout=60,
+            placeholder="Select a prompt to send this embed.",
         )
-        await interaction.response.send_message(
-            content=self.config.prompts.remove_field_content, view=select
-        )
-        await select.wait()
-        if select.values == None:
-            return await self.refresh_creator(interaction)
+        await interaction.response.send_message(view=prompt)
+        await prompt.wait()
 
-        self.embed.remove_field(int(select.values[0]))
-        return await self.refresh_creator(interaction)
-
-
-
+        view = View()
+        for i in self.buttons:
+            view.add_item(i)
         
+        if prompt.channels is not None:
+            channel = await prompt.channels[0].fetch()
+            if isinstance(channel, (TextChannel)):
+                await channel.send(content=self.content, embed=self.embed, view=view)
 
-    async def edit_field(self, interaction: Interaction) -> Any:
+    @ui.button(label="Webhook")
+    async def _send_as_webhook_button(
+        self, interaction: Interaction, _: ui.Button[Self]
+    ) -> Any:
         ...
 
-    @ui.select()
-    async def _embed_edit_select(
-        self, interaction: Interaction, select: ui.Select[Any]
+    @ui.button(label="Components")
+    async def _load_json_button(
+        self, interaction: Interaction, _: ui.Button[Self]
     ) -> Any:
-        await self.refresh_creator(interaction)
-        return await self.edit_callbacks[select.values[0]](interaction)
+        ...
 
-    @ui.select()
-    async def _embed_actions_select(
-        self, interaction: Interaction, select: ui.Select[Any]
-    ) -> Any:
-        await self.refresh_creator(interaction)
-        return await self.action_callbacks[select.values[0]](interaction)
+    @ui.button(label="More")
+    async def _more_button(self, interaction: Interaction, _: ui.Button[Self]) -> Any:
+        ...

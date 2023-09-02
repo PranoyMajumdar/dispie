@@ -244,7 +244,6 @@ class RoleSelectPrompt(View):
         if interaction.message is not None:
             return await interaction.message.delete()
 
-
 class UserSelectPrompt(View):
     """A custom View to create an interactive user select prompt.
 

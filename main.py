@@ -132,4 +132,3 @@ async def mop(interaction: discord.Interaction):
 @bot.command()
 async def c(ctx: commands.Context[Any]):
     await EmbedCreator(author=ctx.author).start(ctx)
-
