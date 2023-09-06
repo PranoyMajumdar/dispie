@@ -8,7 +8,7 @@ from enum import StrEnum
 from .button import CreatorButton, CreatorButtonType
 
 if TYPE_CHECKING:
-    from discord import Emoji, PartialEmoji
+    from discord import Emoji, PartialEmoji, Embed
     from .creator import EmbedCreator
 
     EmojiType: TypeAlias = Union[Emoji, PartialEmoji, str, None]
@@ -107,6 +107,19 @@ class Modals:
         default_factory=lambda: ModalInput(label="Inline", required=True)
     )
 
+    edit_field: str = field(default="Edit a field")
+    edit_field_name: ModalInput = field(
+        default_factory=lambda: ModalInput(label="Name", required=True)
+    )
+    edit_field_value: ModalInput = field(
+        default_factory=lambda: ModalInput(
+            label="Value", style=TextStyle.paragraph, required=True
+        )
+    )
+    edit_field_inline: ModalInput = field(
+        default_factory=lambda: ModalInput(label="Inline", required=True)
+    )
+
 
 @dataclass
 class EmbedSectionSelect:
@@ -161,8 +174,13 @@ class EmbedFieldsSectionSelect:
         )
     )
 
-    def options(self) -> list[SelectOption]:
-        return [self.default, self.add_field, self.remove_field, self.edit_field]
+    def options(self, embed: Embed) -> list[SelectOption]:
+        base = [self.default, self.add_field]
+
+        if len(embed.fields) > 0:
+            base.append(self.remove_field)
+            base.append(self.edit_field)
+        return base
 
 
 @dataclass
@@ -179,8 +197,8 @@ class Button:
     button_type: CreatorButtonType
     style: ButtonStyle = field(default=ButtonStyle.gray)
     emoji: EmojiType = field(default=None)
-    custom_id: str | None  = field(default=None)
-    row: int |None = field(default=None)
+    custom_id: str | None = field(default=None)
+    row: int | None = field(default=None)
 
     def to_button(self, creator: EmbedCreator) -> CreatorButton[Any]:
         return CreatorButton(
@@ -190,27 +208,38 @@ class Button:
             style=self.style,
             emoji=self.emoji,
             custom_id=self.custom_id,
-            row=self.row
+            row=self.row,
         )
 
 
 @dataclass
 class Buttons:
-    send_button: Button = field(default_factory=lambda: Button(label="Send", button_type=CreatorButtonType.SEND))
-    webhook_button: Button = field(default_factory=lambda: Button(label="Webhook", button_type=CreatorButtonType.SEND_AS_WEBHOOK))
-    load_json: Button = field(
-        default_factory=lambda: Button(label="Load Json", button_type=CreatorButtonType.LOAD_JSON)
+    send_button: Button = field(
+        default_factory=lambda: Button(label="Send", button_type=CreatorButtonType.SEND)
     )
-    more_button: Button = field(default_factory=lambda: Button(label="More", button_type=CreatorButtonType.MORE))
-
+    webhook_button: Button = field(
+        default_factory=lambda: Button(
+            label="Webhook", button_type=CreatorButtonType.SEND_AS_WEBHOOK
+        )
+    )
+    load_json: Button = field(
+        default_factory=lambda: Button(
+            label="Load Json", button_type=CreatorButtonType.LOAD_JSON
+        )
+    )
+    more_button: Button = field(
+        default_factory=lambda: Button(label="More", button_type=CreatorButtonType.MORE)
+    )
 
     def values(self, creator: EmbedCreator) -> list[CreatorButton[Any]]:
         return [
             self.send_button.to_button(creator),
             self.webhook_button.to_button(creator),
             self.load_json.to_button(creator),
-            self.more_button.to_button(creator)
+            self.more_button.to_button(creator),
         ]
+
+
 @dataclass
 class ErrorMessage:
     color_conversion_error: str = field(
@@ -223,8 +252,34 @@ class ErrorMessage:
 
 
 @dataclass
+class PromptField:
+    message_content: str
+    default_field_name: str
+    placeholder: str
+
+
+@dataclass
+class Prompts:
+    remove_field: PromptField = field(
+        default_factory=lambda: PromptField(
+            message_content="Select a field to remove.",
+            default_field_name="Field",
+            placeholder="Select a field.",
+        )
+    )
+    edit_field: PromptField = field(
+        default_factory=lambda: PromptField(
+            message_content="Select a field to edit",
+            default_field_name="Field",
+            placeholder="Select a field.",
+        )
+    )
+
+
+@dataclass
 class BaseConfig:
     selects: Selects = field(default_factory=Selects)
     buttons: Buttons = field(default_factory=Buttons)
     modals: Modals = field(default_factory=Modals)
     errors: ErrorMessage = field(default_factory=ErrorMessage)
+    prompts: Prompts = field(default_factory=Prompts)
